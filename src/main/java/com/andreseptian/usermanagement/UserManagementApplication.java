@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 public class UserManagementApplication {
 
-    private static final int STRENGHT = 12;
+    private static final int STRENGTH = 12;
 
     public static void main(String[] args) {
         SpringApplication.run(UserManagementApplication.class, args);
@@ -19,7 +19,7 @@ public class UserManagementApplication {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(STRENGHT);
+        return new BCryptPasswordEncoder(STRENGTH);
     }
 
 
