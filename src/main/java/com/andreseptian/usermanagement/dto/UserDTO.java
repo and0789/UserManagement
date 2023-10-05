@@ -1,7 +1,5 @@
 package com.andreseptian.usermanagement.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
