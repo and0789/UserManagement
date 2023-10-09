@@ -1,7 +1,5 @@
 package com.andreseptian.usermanagement.exception;
 
 public class ApiException extends RuntimeException {
-    public ApiException(String message) {
-        super(message);
-    }
+    public ApiException(String message) { super(message); }
 }

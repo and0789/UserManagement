@@ -25,6 +25,5 @@ public class UserRowMapper implements RowMapper<User> {
                 .isNotLocked(resultSet.getBoolean("non_locked"))
                 .createdAt(resultSet.getTimestamp("created_at").toLocalDateTime())
                 .build();
-
     }
 }

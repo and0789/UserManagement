@@ -16,4 +16,3 @@ public class RoleRowMapper implements RowMapper<Role> {
                 .build();
     }
 }
-
