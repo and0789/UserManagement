@@ -31,7 +31,6 @@ import java.util.UUID;
 import static com.andreseptian.usermanagement.enumeration.RoleType.ROLE_USER;
 import static com.andreseptian.usermanagement.enumeration.VerificationType.ACCOUNT;
 import static com.andreseptian.usermanagement.query.UserQuery.*;
-import static com.andreseptian.usermanagement.utils.SmsUtils.sendSMS;
 import static java.util.Map.of;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -49,11 +48,12 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
 
     @Override
     public User create(User user) {
-        if(getEmailCount(user.getEmail().trim().toLowerCase()) > 0) throw new ApiException("Email already in use. Please use a different email and try again.");
+        if (getEmailCount(user.getEmail().trim().toLowerCase()) > 0)
+            throw new ApiException("Email already in use. Please use a different email and try again.");
         try {
             KeyHolder holder = new GeneratedKeyHolder();
             SqlParameterSource parameters = getSqlParameterSource(user);
-            jdbc.update(INSERT_USER_QUERY, parameters, holder, new String[] {"id"} );
+            jdbc.update(INSERT_USER_QUERY, parameters, holder, new String[]{"id"});
             user.setId(requireNonNull(holder.getKey()).longValue());
             roleRepository.addRoleToUser(user.getId(), ROLE_USER.name());
             String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), ACCOUNT.getType());
@@ -95,7 +95,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = getUserByEmail(email);
-        if(user == null) {
+        if (user == null) {
             log.error("User not found in the database");
             throw new UsernameNotFoundException("User not found in the database");
         } else {
@@ -134,11 +134,11 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
 
     @Override
     public User verifyCode(String email, String code) {
-        if(isVerificationCodeExpired(code)) throw new ApiException("This code has expired. Please login again.");
+        if (isVerificationCodeExpired(code)) throw new ApiException("This code has expired. Please login again.");
         try {
             User userByCode = jdbc.queryForObject(SELECT_USER_BY_USER_CODE_QUERY, of("code", code), new UserRowMapper());
             User userByEmail = jdbc.queryForObject(SELECT_USER_BY_EMAIL_QUERY, of("email", email), new UserRowMapper());
-            if(userByCode.getEmail().equalsIgnoreCase(userByEmail.getEmail())) {
+            if (userByCode.getEmail().equalsIgnoreCase(userByEmail.getEmail())) {
                 jdbc.update(DELETE_CODE, of("code", code));
                 return userByCode;
             } else {

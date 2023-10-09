@@ -28,11 +28,11 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class TokenProvider {
     public static final String AUTHORITIES = "authorities";
+    public static final String TOKEN_CANNOT_BE_VERIFIED = "Token cannot be verified";
     private static final String GET_ARRAYS_LLC = "GET_ARRAYS_LLC";
     private static final String CUSTOMER_MANAGEMENT_SERVICE = "CUSTOMER_MANAGEMENT_SERVICE";
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1_800_000;
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 432_000_000;
-    public static final String TOKEN_CANNOT_BE_VERIFIED = "Token cannot be verified";
     @Value("${jwt.secret}")
     private String secret;
 

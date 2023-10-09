@@ -3,7 +3,6 @@ package com.andreseptian.usermanagement.service.implementation;
 import com.andreseptian.usermanagement.domain.Role;
 import com.andreseptian.usermanagement.domain.User;
 import com.andreseptian.usermanagement.dto.UserDTO;
-import com.andreseptian.usermanagement.dtomapper.UserDTOMapper;
 import com.andreseptian.usermanagement.repository.RoleRepository;
 import com.andreseptian.usermanagement.repository.UserRepository;
 import com.andreseptian.usermanagement.service.UserService;
