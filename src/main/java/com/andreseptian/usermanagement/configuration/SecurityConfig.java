@@ -31,6 +31,8 @@ public class SecurityConfig {
             "/user/login/**",
             "/user/verify/code/**",
             "/user/register/**",
+            "/user/resetPassword/**",
+            "user/verify/password/**"
     };
     private final BCryptPasswordEncoder encoder;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
@@ -42,13 +44,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> {
-                    request.requestMatchers(PUBLIC_URLS).permitAll()
-                            .requestMatchers(OPTIONS).permitAll()
-                            .requestMatchers(DELETE, "/user/delete/**").hasAuthority("DELETE:USER")
-                            .requestMatchers(DELETE, "/customer/delete/**").hasAuthority("DELETE:CUSTOMER")
-                            .anyRequest().authenticated();
-                })
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(PUBLIC_URLS).permitAll()
+                        .requestMatchers(OPTIONS).permitAll()
+                        .requestMatchers(DELETE, "/user/delete/**").hasAuthority("DELETE:USER")
+                        .requestMatchers(DELETE, "/customer/delete/**").hasAuthority("DELETE:CUSTOMER")
+                        .anyRequest().authenticated())
                 .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .exceptionHandling(exception -> exception.accessDeniedHandler(customAccessDeniedHandler)
