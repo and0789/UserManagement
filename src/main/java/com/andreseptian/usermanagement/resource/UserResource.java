@@ -24,6 +24,7 @@ import static com.andreseptian.usermanagement.dtomapper.UserDTOMapper.toUser;
 import static com.andreseptian.usermanagement.utils.ExceptionUtils.processError;
 import static java.time.LocalDateTime.now;
 import static java.util.Map.of;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.security.authentication.UsernamePasswordAuthenticationToken.unauthenticated;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
@@ -32,6 +33,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 @RequestMapping(path = "/user")
 @RequiredArgsConstructor
 public class UserResource {
+    private static final String TOKEN_PREFIX = "Bearer ";
     private final UserService userService;
     private final RoleService roleService;
     private final AuthenticationManager authenticationManager;
@@ -91,7 +93,8 @@ public class UserResource {
                         .message("Login Success")
                         .status(OK)
                         .statusCode(OK.value())
-                        .build());
+                        .build()
+        );
     }
 
     @GetMapping("/resetPassword/{email}")
@@ -138,6 +141,57 @@ public class UserResource {
 
     // END - To reset password when user is not login
 
+
+    @GetMapping("/verify/account/{key}")
+    public ResponseEntity<HttpResponse> verifyAccount(@PathVariable("key") String key) {
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message(userService.verifyAccountKey(key).isEnabled() ?
+                                "Account already verified" : "Account verified")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
+    @GetMapping("/refresh/token")
+    public ResponseEntity<HttpResponse> refreshToken(HttpServletRequest request) {
+        if (isHeaderAndTokenValid(request)) {
+            String token = request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length());
+            UserDTO user = userService.getUserByEmail(tokenProvider.getSubject(token, request));
+            return ResponseEntity.ok().body(
+                    HttpResponse.builder()
+                            .timeStamp(now().toString())
+                            .data(of("user", user,
+                                    "access_token", tokenProvider.createAccessToken(getUserPrincipal(user)),
+                                    "refresh_token", token))
+                            .message("Token refreshed")
+                            .status(OK)
+                            .statusCode(OK.value())
+                            .build());
+        } else {
+            return ResponseEntity.badRequest().body(
+                    HttpResponse.builder()
+                            .timeStamp(now().toString())
+                            .reason("Refresh Token missing or invalid")
+                            .developerMessage("Refresh Token missing or invalid")
+                            .status(BAD_REQUEST)
+                            .statusCode(BAD_REQUEST.value())
+                            .build());
+        }
+    }
+
+    private boolean isHeaderAndTokenValid(HttpServletRequest request) {
+        return request.getHeader(AUTHORIZATION) != null
+                && request.getHeader(AUTHORIZATION).startsWith(TOKEN_PREFIX)
+                && tokenProvider.isTokenValid(
+                tokenProvider.getSubject(request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length()), request),
+                request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length())
+        );
+    }
+
+
     @RequestMapping("/error")
     public ResponseEntity<HttpResponse> handleError(HttpServletRequest request) {
         return ResponseEntity.badRequest().body(
@@ -147,8 +201,19 @@ public class UserResource {
                                 " request for this path on the server")
                         .status(BAD_REQUEST)
                         .statusCode(BAD_REQUEST.value())
-                        .build());
+                        .build()
+        );
     }
+
+    /*@RequestMapping("/error")
+    public ResponseEntity<HttpResponse> handleError(HttpServletRequest request) {
+        return new ResponseEntity<>(HttpResponse.builder()
+                .timeStamp(now().toString())
+                .reason("There is no mapping for a " + request.getMethod() + " request for this path on the server")
+                .status(NOT_FOUND)
+                .statusCode(NOT_FOUND.value())
+                .build(), NOT_FOUND);
+    }*/
 
     private Authentication authenticate(String email, String password) {
         try {
