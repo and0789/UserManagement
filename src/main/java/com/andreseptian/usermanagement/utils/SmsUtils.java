@@ -8,9 +8,9 @@ import static com.twilio.rest.api.v2010.account.Message.creator;
 
 
 public class SmsUtils {
-    public static final String FROM_NUMBER = "6285295557633";
-    public static final String SID_KEY = "AC9014759e5d414efb6a08c1d51fe799d9";
-    public static final String TOKEN_KEY = "6f8b96f671554d223f99c73f9521d74e";
+    public static final String FROM_NUMBER = "<Phone Number>";
+    public static final String SID_KEY = "<Your Key>";
+    public static final String TOKEN_KEY = "<Your Key";
 
     public static void sendSMS(String to, String messageBody) {
         Twilio.init(SID_KEY, TOKEN_KEY);
