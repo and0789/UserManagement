@@ -206,14 +206,14 @@ public class HandleException extends ResponseEntityExceptionHandler implements E
     }
 
     private String processErrorMessage(String errorMessage) {
-        if (errorMessage != null) {
-            if (errorMessage.contains("Duplicate entry") && errorMessage.contains("AccountVerifications")) {
+        if(errorMessage != null) {
+            if(errorMessage.contains("Duplicate entry") && errorMessage.contains("AccountVerifications")) {
                 return "You already verified your account.";
             }
-            if (errorMessage.contains("Duplicate entry") && errorMessage.contains("ResetPasswordVerifications")) {
+            if(errorMessage.contains("Duplicate entry") && errorMessage.contains("ResetPasswordVerifications")) {
                 return "We already sent you an email to reset your password.";
             }
-            if (errorMessage.contains("Duplicate entry")) {
+            if(errorMessage.contains("Duplicate entry")) {
                 return "Duplicate entry. Please try again.";
             }
         }
