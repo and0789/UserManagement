@@ -22,6 +22,8 @@ import java.net.URI;
 
 import static com.andreseptian.usermanagement.dtomapper.UserDTOMapper.toUser;
 import static com.andreseptian.usermanagement.utils.ExceptionUtils.processError;
+import static com.andreseptian.usermanagement.utils.UserUtils.getAuthenticatedUser;
+import static com.andreseptian.usermanagement.utils.UserUtils.getLoggedInUser;
 import static java.time.LocalDateTime.now;
 import static java.util.Map.of;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -45,12 +47,8 @@ public class UserResource {
     @PostMapping("/login")
     public ResponseEntity<HttpResponse> login(@RequestBody @Valid LoginForm loginForm) {
         Authentication authentication = authenticate(loginForm.getEmail(), loginForm.getPassword());
-        UserDTO user = getAuthenticatedUser(authentication);
+        UserDTO user = getLoggedInUser(authentication);
         return user.isUsingMfa() ? sendVerificationCode(user) : sendResponse(user);
-    }
-
-    private UserDTO getAuthenticatedUser(Authentication authentication) {
-        return ((UserPrincipal) authentication.getPrincipal()).getUser();
     }
 
     @PostMapping("/register")
@@ -68,8 +66,7 @@ public class UserResource {
 
     @GetMapping("/profile")
     public ResponseEntity<HttpResponse> profile(Authentication authentication) {
-        UserDTO user = userService.getUserByEmail(authentication.getName());
-        System.out.println(authentication);
+        UserDTO user = userService.getUserByEmail(getAuthenticatedUser(authentication).getEmail());
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -79,6 +76,7 @@ public class UserResource {
                         .statusCode(OK.value())
                         .build());
     }
+
 
     // START - To reset password when user is not login
 
