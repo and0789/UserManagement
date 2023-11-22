@@ -2,6 +2,7 @@ package com.andreseptian.usermanagement.repository;
 
 import com.andreseptian.usermanagement.domain.User;
 import com.andreseptian.usermanagement.dto.UserDTO;
+import com.andreseptian.usermanagement.form.UpdateForm;
 
 import java.util.Collection;
 
@@ -31,4 +32,6 @@ public interface UserRepository<T extends User> {
     void renewPassword(String key, String password, String confirmPassword);
 
     T verifyAccountKey(String key);
+
+    T updateUserDetails(UpdateForm user);
 }

@@ -3,6 +3,7 @@ package com.andreseptian.usermanagement.service.implementation;
 import com.andreseptian.usermanagement.domain.Role;
 import com.andreseptian.usermanagement.domain.User;
 import com.andreseptian.usermanagement.dto.UserDTO;
+import com.andreseptian.usermanagement.form.UpdateForm;
 import com.andreseptian.usermanagement.repository.RoleRepository;
 import com.andreseptian.usermanagement.repository.UserRepository;
 import com.andreseptian.usermanagement.service.UserService;
@@ -55,6 +56,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO verifyAccountKey(String key) {
         return mapToUserDTO(userRepository.verifyAccountKey(key));
+    }
+
+    @Override
+    public UserDTO updateUserDetails(UpdateForm user) {
+        return mapToUserDTO(userRepository.updateUserDetails(user));
+    }
+
+    @Override
+    public UserDTO getUserById(Long userId) {
+        return mapToUserDTO(userRepository.get(userId));
     }
 
 

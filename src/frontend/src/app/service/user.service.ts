@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { CustomHttpResponse, Profile } from '../interface/appstates';
+import {User} from "../interface/user";
 
 
 @Injectable({
@@ -31,11 +32,20 @@ export class UserService {
 
   profile$ = () => <Observable<CustomHttpResponse<Profile>>>
     this.http.get<CustomHttpResponse<Profile>>
-    (`${this.server}/user/profile`, { headers: new HttpHeaders().set('Authorization', 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJHRVRfQVJSQVlTX0xMQyIsImF1ZCI6IkNVU1RPTUVSX01BTkFHRU1FTlRfU0VSVklDRSIsImlhdCI6MTcwMDYyNTQxMCwic3ViIjoiYW5kcmVAZ21haWwuY29tIiwiYXV0aG9yaXRpZXMiOlsiUkVBRDpVU0VSIiwiIFJFQUQ6Q1VTVE9NRVIiXSwiZXhwIjoxNzAwNjI3MjEwfQ.8BoxHsWNm6HhyXH60LEcA09WyQoxoPuATp1wRoksJFpwM1Buwkcn9B3kXsIfrV_4-zbw5bk3j2jfELnzwhkOLQ') })
+    (`${this.server}/user/profile`, { headers: new HttpHeaders().set('Authorization', 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBTkRSRV9TRVBUSUFOX0FQUExJQ0FUSU9OIiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiaWF0IjoxNzAwNjU1MzE2LCJzdWIiOiIxIiwiYXV0aG9yaXRpZXMiOlsiUkVBRDpVU0VSIiwiIFJFQUQ6Q1VTVE9NRVIiXSwiZXhwIjoxNzAwNzQxNzE2fQ.bCkK8nJ8kKeXV71loUGNwFGBjqKIILt7tuNDC5l9FaI_2XD9nE1C1-JUXGC-Q7DGZ6Wxk-kSv9eUiIj8kgYlhw') })
       .pipe(
         tap(console.log),
         catchError(this.handleError)
       );
+
+  update$ = (user: User) => <Observable<CustomHttpResponse<Profile>>>
+    this.http.patch<CustomHttpResponse<Profile>>
+    (`${this.server}/user/update`, user, { headers: new HttpHeaders().set('Authorization', 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJBTkRSRV9TRVBUSUFOX0FQUExJQ0FUSU9OIiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiaWF0IjoxNzAwNjU1MzE2LCJzdWIiOiIxIiwiYXV0aG9yaXRpZXMiOlsiUkVBRDpVU0VSIiwiIFJFQUQ6Q1VTVE9NRVIiXSwiZXhwIjoxNzAwNzQxNzE2fQ.bCkK8nJ8kKeXV71loUGNwFGBjqKIILt7tuNDC5l9FaI_2XD9nE1C1-JUXGC-Q7DGZ6Wxk-kSv9eUiIj8kgYlhw') })
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.log(error);
     let errorMessage: string;

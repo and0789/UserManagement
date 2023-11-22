@@ -2,6 +2,7 @@ package com.andreseptian.usermanagement.service;
 
 import com.andreseptian.usermanagement.domain.User;
 import com.andreseptian.usermanagement.dto.UserDTO;
+import com.andreseptian.usermanagement.form.UpdateForm;
 
 public interface UserService {
     UserDTO createUser(User user);
@@ -19,5 +20,9 @@ public interface UserService {
     void renewPassword(String key, String password, String confirmPassword);
 
     UserDTO verifyAccountKey(String key);
+
+    UserDTO updateUserDetails(UpdateForm user);
+
+    UserDTO getUserById(Long userId);
 }
 

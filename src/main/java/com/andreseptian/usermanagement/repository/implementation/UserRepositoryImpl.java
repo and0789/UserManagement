@@ -6,6 +6,7 @@ import com.andreseptian.usermanagement.domain.UserPrincipal;
 import com.andreseptian.usermanagement.dto.UserDTO;
 import com.andreseptian.usermanagement.enumeration.VerificationType;
 import com.andreseptian.usermanagement.exception.ApiException;
+import com.andreseptian.usermanagement.form.UpdateForm;
 import com.andreseptian.usermanagement.repository.RoleRepository;
 import com.andreseptian.usermanagement.repository.UserRepository;
 import com.andreseptian.usermanagement.rowmapper.UserRowMapper;
@@ -77,7 +78,14 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
 
     @Override
     public User get(Long id) {
-        return null;
+        try {
+            return jdbc.queryForObject(SELECT_USER_BY_ID_QUERY, of("id", id), new UserRowMapper());
+        } catch (EmptyResultDataAccessException exception) {
+            throw new ApiException("No User found by id: " + id);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again.");
+        }
     }
 
     @Override
@@ -214,6 +222,19 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
         }
     }
 
+    @Override
+    public User updateUserDetails(UpdateForm user) {
+        try {
+            jdbc.update(UPDATE_USER_DETAILS_QUERY, getUserDetailsSqlParameterSource(user));
+            return get(user.getId());
+        }catch (EmptyResultDataAccessException exception) {
+            throw new ApiException("No User found by id: " + user.getId());
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
     private Boolean isLinkExpired(String key, VerificationType password) {
         try {
             return jdbc.queryForObject(SELECT_EXPIRATION_BY_URL, of("url", getVerificationUrl(key, password.getType())), Boolean.class);
@@ -242,6 +263,18 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
                 .addValue("lastName", user.getLastName())
                 .addValue("email", user.getEmail())
                 .addValue("password", encoder.encode(user.getPassword()));
+    }
+
+    private SqlParameterSource getUserDetailsSqlParameterSource(UpdateForm user) {
+        return new MapSqlParameterSource()
+                .addValue("id", user.getId())
+                .addValue("firstName", user.getFirstName())
+                .addValue("lastName", user.getLastName())
+                .addValue("email", user.getEmail())
+                .addValue("phone", user.getPhone())
+                .addValue("address", user.getAddress())
+                .addValue("title", user.getTitle())
+                .addValue("bio", user.getBio());
     }
 
     private String getVerificationUrl(String key, String type) {

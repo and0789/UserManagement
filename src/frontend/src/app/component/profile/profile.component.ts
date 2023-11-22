@@ -4,6 +4,7 @@ import {UserService} from 'src/app/service/user.service';
 import {Observable, of, BehaviorSubject, map, startWith, catchError} from 'rxjs';
 import {DataState} from 'src/app/enum/datastate.enum';
 import {Component, OnInit} from '@angular/core';
+import {NgForm} from "@angular/forms";
 
 @Component({
   selector: 'app-profile',
@@ -31,6 +32,24 @@ export class ProfileComponent implements OnInit {
         startWith({dataState: DataState.LOADING}),
         catchError((error: string) => {
           return of({dataState: DataState.ERROR, appData: this.dataSubject.value, error})
+        })
+      )
+  }
+
+  updateProfile(profileForm: NgForm): void {
+    this.isLoadingSubject.next(true);
+    this.profileState$ = this.userService.update$(profileForm.value)
+      .pipe(
+        map(response => {
+          console.log(response);
+          this.dataSubject.next({ ...response, data: response.data });
+          this.isLoadingSubject.next(false);
+          return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+        }),
+        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        catchError((error: string) => {
+          this.isLoadingSubject.next(false);
+          return of({ dataState: DataState.LOADED, appData: this.dataSubject.value, error })
         })
       )
   }

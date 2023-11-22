@@ -6,6 +6,7 @@ import com.andreseptian.usermanagement.domain.UserPrincipal;
 import com.andreseptian.usermanagement.dto.UserDTO;
 import com.andreseptian.usermanagement.exception.ApiException;
 import com.andreseptian.usermanagement.form.LoginForm;
+import com.andreseptian.usermanagement.form.UpdateForm;
 import com.andreseptian.usermanagement.provider.TokenProvider;
 import com.andreseptian.usermanagement.service.RoleService;
 import com.andreseptian.usermanagement.service.UserService;
@@ -19,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 
 import static com.andreseptian.usermanagement.dtomapper.UserDTOMapper.toUser;
 import static com.andreseptian.usermanagement.utils.ExceptionUtils.processError;
@@ -72,6 +74,20 @@ public class UserResource {
                         .timeStamp(now().toString())
                         .data(of("user", user))
                         .message("Profile Retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<HttpResponse> updateUser(@RequestBody @Valid UpdateForm user) throws InterruptedException {
+        TimeUnit.SECONDS.sleep(3);
+        UserDTO updatedUser = userService.updateUserDetails(user);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", updatedUser))
+                        .message("User updated")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
@@ -155,15 +171,14 @@ public class UserResource {
 
     @GetMapping("/refresh/token")
     public ResponseEntity<HttpResponse> refreshToken(HttpServletRequest request) {
-        if (isHeaderAndTokenValid(request)) {
+        if(isHeaderAndTokenValid(request)) {
             String token = request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length());
-            UserDTO user = userService.getUserByEmail(tokenProvider.getSubject(token, request));
+            UserDTO user = userService.getUserById(tokenProvider.getSubject(token, request));
             return ResponseEntity.ok().body(
                     HttpResponse.builder()
                             .timeStamp(now().toString())
-                            .data(of("user", user,
-                                    "access_token", tokenProvider.createAccessToken(getUserPrincipal(user)),
-                                    "refresh_token", token))
+                            .data(of("user", user, "access_token", tokenProvider.createAccessToken(getUserPrincipal(user))
+                                    , "refresh_token", token))
                             .message("Token refreshed")
                             .status(OK)
                             .statusCode(OK.value())
