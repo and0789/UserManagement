@@ -53,6 +53,8 @@
             </div>
           </div>
           <div class="tab-content p-4 p-md-5" id="v-pills-tabContent" style="border-left: 1px solid #d4d0d0;">
+
+            <!--Profile TAB-->
             <div aria-labelledby="profile" class="tab-pane fade show active" id="profile-tab" role="tabpanel"
                  style="min-height: 510px;">
               <h3 class="mb-4">Profile Settings</h3>
@@ -62,11 +64,12 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>First Name</label>
-                      <input [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async) || (isLoading$ | async)"
-                             [ngModel]="state?.appData?.data?.user?.firstName"
-                             class="form-control"
-                             name="firstName"
-                             type="text">
+                      <input
+                        [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async) || (isLoading$ | async)"
+                        [ngModel]="state?.appData?.data?.user?.firstName"
+                        class="form-control"
+                        name="firstName"
+                        type="text">
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -120,10 +123,11 @@
                   <div class="col-md-12">
                     <div class="form-group">
                       <label>Bio</label>
-                      <textarea [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
-                                [ngModel]="state?.appData?.data?.user?.bio"
-                                class="form-control"
-                                name="bio" rows="4">
+                      <textarea
+                        [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
+                        [ngModel]="state?.appData?.data?.user?.bio"
+                        class="form-control"
+                        name="bio" rows="4">
                       </textarea>
                     </div>
                   </div>
@@ -144,16 +148,18 @@
                 </div>
               </form>
             </div>
+
+            <!--Password TAB-->
             <div aria-labelledby="password" class="tab-pane fade" id="password-tab" role="tabpanel"
                  style="min-height: 510px;">
               <h3 class="mb-4">Password Settings</h3>
-              <form>
-                <input name="userId" type="hidden">
+              <form #passwordForm="ngForm" (ngSubmit)="updatePassword(passwordForm)">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Current password</label>
-                      <input class="form-control" name="currentPassword" required type="password">
+                      <input [disabled]="(isLoading$ | async)" class="form-control" name="currentPassword" ngModel
+                             required type="password">
                     </div>
                   </div>
                 </div>
@@ -161,26 +167,31 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>New password</label>
-                      <input class="form-control" minlength="5" name="newPassword" required type="password">
+                      <input [disabled]="(isLoading$ | async)" class="form-control" minlength="5" name="newPassword"
+                             ngModel required type="password">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Confirm new password</label>
-                      <input class="form-control" minlength="5" name="confirmPassword" required type="password">
+                      <input [disabled]="(isLoading$ | async)" class="form-control" minlength="5" name="confirmNewPassword"
+                             ngModel required type="password">
                     </div>
                   </div>
                 </div>
                 <div>
-                  <button class="btn btn-primary" type="submit">
-                    <span aria-hidden="true" class="spinner-border spinner-border-sm" role="status"
-                          style="margin-right: 5px;"></span>
-                    <span>Loading...</span>
-                    <span>Update</span>
+                  <button [disabled]="passwordForm.invalid || (isLoading$ | async)" class="btn btn-primary"
+                          type="submit">
+                    <span *ngIf="isLoading$ | async" aria-hidden="true" class="spinner-border spinner-border-sm"
+                          role="status" style="margin-right: 5px;"></span>
+                    <span *ngIf="isLoading$ | async">Loading...</span>
+                    <span *ngIf="!(isLoading$ | async)">Update</span>
                   </button>
                 </div>
               </form>
             </div>
+
+            <!--Authorization TAB-->
             <div aria-labelledby="security" class="tab-pane fade" id="security-tab" role="tabpanel"
                  style="min-height: 510px;">
               <h3 class="mb-4">Authorization Settings</h3>
@@ -211,6 +222,7 @@
                 </div>
               </form>
             </div>
+
             <div aria-labelledby="application" class="tab-pane fade" id="application-tab" role="tabpanel"
                  style="min-height: 510px;">
               <h3 class="mb-4">Application Settings</h3>

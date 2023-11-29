@@ -7,6 +7,7 @@ import com.andreseptian.usermanagement.dto.UserDTO;
 import com.andreseptian.usermanagement.exception.ApiException;
 import com.andreseptian.usermanagement.form.LoginForm;
 import com.andreseptian.usermanagement.form.UpdateForm;
+import com.andreseptian.usermanagement.form.UpdatePasswordForm;
 import com.andreseptian.usermanagement.provider.TokenProvider;
 import com.andreseptian.usermanagement.service.RoleService;
 import com.andreseptian.usermanagement.service.UserService;
@@ -154,6 +155,19 @@ public class UserResource {
     }
 
     // END - To reset password when user is not login
+
+    @PatchMapping("/update/password")
+    public ResponseEntity<HttpResponse> updatePassword(Authentication authentication, @RequestBody @Valid UpdatePasswordForm form) {
+        UserDTO userDTO = getAuthenticatedUser(authentication);
+        userService.updatePassword(userDTO.getId(), form.getCurrentPassword(), form.getNewPassword(), form.getConfirmNewPassword());
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Password updated successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
 
 
     @GetMapping("/verify/account/{key}")
