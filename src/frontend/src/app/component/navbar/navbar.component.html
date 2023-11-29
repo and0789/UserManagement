@@ -1,39 +1,55 @@
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container">
-    <a class="navbar-brand" [routerLink]="['/']">
-      <i style="margin-right: 5px;" class="bi bi-safe"></i>
+    <a [routerLink]="['/']" class="navbar-brand">
+      <i class="bi bi-safe" style="margin-right: 5px;"></i>
       User Management
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-            aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+            class="navbar-toggler" data-bs-target="#navbarSupportedContent" data-bs-toggle="collapse"
+            type="button"><span class="navbar-toggler-icon"></span></button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="navbarDropdownBlog"
+             role="button">
             Customers
           </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-            <li><a class="dropdown-item" [routerLink]="['/customers/new']"><i style="padding-right: 8px;" class="bi bi-person-plus-fill"></i>New Customer</a></li>
-            <li><a class="dropdown-item" [routerLink]="['/customers']"><i style="padding-right: 8px;" class="bi bi-people-fill"></i>All Customers</a></li>
+          <ul aria-labelledby="navbarDropdownBlog" class="dropdown-menu dropdown-menu-end">
+            <li><a [routerLink]="['/customers/new']" class="dropdown-item"><i class="bi bi-person-plus-fill"
+                                                                              style="padding-right: 8px;"></i>New
+              Customer</a></li>
+            <li><a [routerLink]="['/customers']" class="dropdown-item"><i class="bi bi-people-fill"
+                                                                          style="padding-right: 8px;"></i>All
+              Customers</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="navbarDropdownBlog"
+             role="button">
             Invoices
           </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-            <li><a class="dropdown-item" [routerLink]="['/invoices/new']"><i style="padding-right: 8px;" class="bi bi-receipt"></i>New Invoice</a></li>
-            <li><a class="dropdown-item" [routerLink]="['/invoices']"><i style="padding-right: 8px;" class="bi bi-receipt-cutoff"></i>All Invoices</a></li>
+          <ul aria-labelledby="navbarDropdownBlog" class="dropdown-menu dropdown-menu-end">
+            <li><a [routerLink]="['/invoices/new']" class="dropdown-item"><i class="bi bi-receipt"
+                                                                             style="padding-right: 8px;"></i>New Invoice</a>
+            </li>
+            <li><a [routerLink]="['/invoices']" class="dropdown-item"><i class="bi bi-receipt-cutoff"
+                                                                         style="padding-right: 8px;"></i>All
+              Invoices</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://img.freepik.com/free-icon/user_318-159711.jpg" alt="john" class="user-avatar-md rounded-circle"></a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-            <li><a class="dropdown-item" [routerLink]="['/profile']"><i style="padding-right: 8px;" class="bi bi-person-circle"></i>John Smith</a></li>
-            <li style="cursor: pointer;"><a class="dropdown-item"><i style="padding-right: 8px;" class="bi bi-box-arrow-in-right"></i>Logout</a></li>
+          <a aria-expanded="false" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" id="navbarDropdownBlog"
+             role="button">
+            <img alt="john" class="user-avatar-md rounded-circle"
+                 src="https://img.freepik.com/free-icon/user_318-159711.jpg"></a>
+          <ul aria-labelledby="navbarDropdownBlog" class="dropdown-menu dropdown-menu-end">
+            <li><a [routerLink]="['/profile']" class="dropdown-item"><i class="bi bi-person-circle"
+                                                                        style="padding-right: 8px;"></i>John Smith</a>
+            </li>
+            <li style="cursor: pointer;"><a class="dropdown-item"><i class="bi bi-box-arrow-in-right"
+                                                                     style="padding-right: 8px;"></i>Logout</a>
+            </li>
           </ul>
         </li>
       </ul>

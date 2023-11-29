@@ -28,13 +28,12 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
-
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String[] PUBLIC_ROUTES = {
             "/user/login",
             "/user/verify/code",
             "/user/register",
-            "/user/refresh/token/"
+            "/user/refresh/token"
     };
     private static final String HTTP_OPTIONS_METHOD = "OPTIONS";
     private final TokenProvider tokenProvider;
@@ -44,31 +43,30 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         try {
             String token = getToken(request);
             Long userId = getUserId(request);
-            if(tokenProvider.isTokenValid(userId, token)) {
+            if (tokenProvider.isTokenValid(userId, token)) {
                 List<GrantedAuthority> authorities = tokenProvider.getAuthorities(token);
                 Authentication authentication = tokenProvider.getAuthentication(userId, authorities, request);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else { SecurityContextHolder.clearContext(); }
+            } else {
+                SecurityContextHolder.clearContext();
+            }
             filter.doFilter(request, response);
         } catch (Exception exception) {
             log.error(exception.getMessage());
             processError(request, response, exception);
         }
+
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getHeader(AUTHORIZATION) == null ||
-                !request.getHeader(AUTHORIZATION).startsWith(TOKEN_PREFIX) ||
-                request.getMethod().equalsIgnoreCase(HTTP_OPTIONS_METHOD) ||
-                asList(PUBLIC_ROUTES).contains(request.getRequestURI());
+        return request.getHeader(AUTHORIZATION) == null || !request.getHeader(AUTHORIZATION).startsWith(TOKEN_PREFIX) ||
+                request.getMethod().equalsIgnoreCase(HTTP_OPTIONS_METHOD) || asList(PUBLIC_ROUTES).contains(request.getRequestURI());
     }
-
 
     private Long getUserId(HttpServletRequest request) {
         return tokenProvider.getSubject(getToken(request), request);
     }
-
 
     private String getToken(HttpServletRequest request) {
         return ofNullable(request.getHeader(AUTHORIZATION))

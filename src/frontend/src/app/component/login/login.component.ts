@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
-import { LoginState } from 'src/app/interface/appstates';
-import { UserService } from 'src/app/service/user.service';
-import { DataState } from 'src/app/enum/datastate.enum';
-import { Key } from 'src/app/enum/key.enum';
+import {Component} from '@angular/core';
+import {NgForm} from '@angular/forms';
+import {Router} from '@angular/router';
+import {BehaviorSubject, catchError, map, Observable, of, startWith} from 'rxjs';
+import {LoginState} from 'src/app/interface/appstates';
+import {UserService} from 'src/app/service/user.service';
+import {DataState} from 'src/app/enum/datastate.enum';
+import {Key} from 'src/app/enum/key.enum';
 
 @Component({
   selector: 'app-login',
@@ -13,12 +13,13 @@ import { Key } from 'src/app/enum/key.enum';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  loginState$: Observable<LoginState> = of({ dataState: DataState.LOADED });
+  loginState$: Observable<LoginState> = of({dataState: DataState.LOADED});
+  readonly DataState = DataState;
   private phoneSubject = new BehaviorSubject<string | null>(null);
   private emailSubject = new BehaviorSubject<string | null>(null);
-  readonly DataState = DataState;
 
-  constructor(private router: Router, private userService: UserService) { }
+  constructor(private router: Router, private userService: UserService) {
+  }
 
   login(loginForm: NgForm): void {
     this.loginState$ = this.userService.login$(loginForm.value.email, loginForm.value.password)
@@ -35,12 +36,12 @@ export class LoginComponent {
             localStorage.setItem(Key.TOKEN, response.data.access_token);
             localStorage.setItem(Key.REFRESH_TOKEN, response.data.refresh_token);
             this.router.navigate(['/']);
-            return { dataState: DataState.LOADED, loginSuccess: true };
+            return {dataState: DataState.LOADED, loginSuccess: true};
           }
         }),
-        startWith({ dataState: DataState.LOADING, isUsingMfa: false }),
+        startWith({dataState: DataState.LOADING, isUsingMfa: false}),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, isUsingMfa: false, loginSuccess: false, error })
+          return of({dataState: DataState.ERROR, isUsingMfa: false, loginSuccess: false, error})
         })
       )
   }
@@ -52,19 +53,23 @@ export class LoginComponent {
           localStorage.setItem(Key.TOKEN, response.data.access_token);
           localStorage.setItem(Key.REFRESH_TOKEN, response.data.refresh_token);
           this.router.navigate(['/']);
-          return { dataState: DataState.LOADED, loginSuccess: true };
+          return {dataState: DataState.LOADED, loginSuccess: true};
         }),
-        startWith({ dataState: DataState.LOADING, isUsingMfa: true, loginSuccess: false,
-          phone: this.phoneSubject.value.substring(this.phoneSubject.value.length - 4) }),
+        startWith({
+          dataState: DataState.LOADING, isUsingMfa: true, loginSuccess: false,
+          phone: this.phoneSubject.value.substring(this.phoneSubject.value.length - 4)
+        }),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, isUsingMfa: true, loginSuccess: false, error,
-            phone: this.phoneSubject.value.substring(this.phoneSubject.value.length - 4) })
+          return of({
+            dataState: DataState.ERROR, isUsingMfa: true, loginSuccess: false, error,
+            phone: this.phoneSubject.value.substring(this.phoneSubject.value.length - 4)
+          })
         })
       )
   }
 
   loginPage(): void {
-    this.loginState$ = of({ dataState: DataState.LOADED });
+    this.loginState$ = of({dataState: DataState.LOADED});
   }
 
 }

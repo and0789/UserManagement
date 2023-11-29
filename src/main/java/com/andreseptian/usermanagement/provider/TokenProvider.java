@@ -35,7 +35,7 @@ public class TokenProvider {
     public static final String TOKEN_CANNOT_BE_VERIFIED = "Token cannot be verified";
     private static final String GET_ARRAYS_LLC = "ANDRE_SEPTIAN_APPLICATION";
     private static final String CUSTOMER_MANAGEMENT_SERVICE = "CUSTOMER_MANAGEMENT_SERVICE";
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 86_400_000;
+    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 86_400_000; // 30_000; //
     private static final long REFRESH_TOKEN_EXPIRATION_TIME = 432_000_000;
     private final UserService userService;
     @Value("${jwt.secret}")

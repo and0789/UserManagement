@@ -9,8 +9,8 @@
             <li class="breadcrumb-item">
               <a [routerLink]="['/']">Home</a>
             </li>
-            <li class="breadcrumb-item active"> Users </li>
-            <li class="breadcrumb-item active" aria-current="page">
+            <li class="breadcrumb-item active"> Users</li>
+            <li aria-current="page" class="breadcrumb-item active">
               {{ state?.appData?.data?.user?.firstName }} {{ state?.appData?.data?.user?.lastName }}
             </li>
           </ol>
@@ -18,117 +18,124 @@
         <div class="bg-white shadow rounded-lg d-block d-sm-flex" style="border-radius: 8px;">
           <div class="profile-tab-nav border-right">
             <div class="p-4">
-              <div class="img-circle text-center mb-3" >
+              <div class="img-circle text-center mb-3">
                          <span style="position: relative">
-                             <img [src]="state?.appData?.data?.user?.imageUrl" alt="Andre" class="shadow" />
-<!--                            <img src="https://img.freepik.com/free-icon/user_318-159711.jpg" alt="John" class="shadow" />-->
+                             <img [src]="state?.appData?.data?.user?.imageUrl" alt="Andre" class="shadow"/>
+                           <!--                            <img src="https://img.freepik.com/free-icon/user_318-159711.jpg" alt="John" class="shadow" />-->
                          <i class="bi bi-camera-fill right-position"></i>
                          </span>
               </div>
-              <h4 class="text-center">{{ state?.appData?.data?.user?.firstName }} {{ state?.appData?.data?.user?.lastName }}</h4>
+              <h4
+                class="text-center">{{ state?.appData?.data?.user?.firstName }} {{ state?.appData?.data?.user?.lastName }}</h4>
               <span class="">Since {{ state?.appData?.data?.user?.createdAt | date: 'MMMM d, y' }}</span>
             </div>
-            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-              <a class="nav-link active" id="profile" data-bs-toggle="pill" data-bs-target="#profile-tab" aria-selected="true" aria-controls="profile" role="tab">
+            <div aria-orientation="vertical" class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
+              <a aria-controls="profile" aria-selected="true" class="nav-link active" data-bs-target="#profile-tab"
+                 data-bs-toggle="pill" id="profile" role="tab">
                 <i class="bi bi-person-circle" style="margin-right: 12px;"></i> Profile
               </a>
-              <a class="nav-link" id="password" data-bs-toggle="pill" data-bs-target="#password-tab" aria-selected="true" aria-controls="password" role="tab">
+              <a aria-controls="password" aria-selected="true" class="nav-link" data-bs-target="#password-tab"
+                 data-bs-toggle="pill" id="password" role="tab">
                 <i class="bi bi-key-fill" style="margin-right: 12px;"></i> Password
               </a>
-              <a class="nav-link" id="security" data-bs-toggle="pill" data-bs-target="#security-tab" aria-selected="true" aria-controls="security" role="tab">
+              <a aria-controls="security" aria-selected="true" class="nav-link" data-bs-target="#security-tab"
+                 data-bs-toggle="pill" id="security" role="tab">
                 <i class="bi bi-shield-shaded" style="margin-right: 12px;"></i> Authorization
               </a>
-              <a class="nav-link" id="application" data-bs-toggle="pill" data-bs-target="#application-tab" aria-selected="true" aria-controls="application" role="tab">
+              <a aria-controls="application" aria-selected="true" class="nav-link" data-bs-target="#application-tab"
+                 data-bs-toggle="pill" id="application" role="tab">
                 <i class="bi bi-gear" style="margin-right: 12px;"></i> Account
               </a>
-              <a class="nav-link" id="notification" data-bs-toggle="pill" data-bs-target="#notification-tab" aria-selected="true" aria-controls="notification" role="tab">
+              <a aria-controls="notification" aria-selected="true" class="nav-link" data-bs-target="#notification-tab"
+                 data-bs-toggle="pill" id="notification" role="tab">
                 <i class="bi bi-lock-fill" style="margin-right: 12px;"></i> Authentication
               </a>
             </div>
           </div>
           <div class="tab-content p-4 p-md-5" id="v-pills-tabContent" style="border-left: 1px solid #d4d0d0;">
-            <div class="tab-pane fade show active" id="profile-tab" role="tabpanel" aria-labelledby="profile" style="min-height: 510px;">
+            <div aria-labelledby="profile" class="tab-pane fade show active" id="profile-tab" role="tabpanel"
+                 style="min-height: 510px;">
               <h3 class="mb-4">Profile Settings</h3>
               <form #profileForm="ngForm" (ngSubmit)="updateProfile(profileForm)">
-                <input type="hidden" name="id" [ngModel]="state?.appData?.data?.user?.id">
+                <input [ngModel]="state?.appData?.data?.user?.id" name="id" type="hidden">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>First Name</label>
-                      <input type="text"
-                             name="firstName"
+                      <input [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async) || (isLoading$ | async)"
                              [ngModel]="state?.appData?.data?.user?.firstName"
-                             [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async) || (isLoading$ | async)"
-                             class="form-control">
+                             class="form-control"
+                             name="firstName"
+                             type="text">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Last Name</label>
-                      <input type="text"
-                             name="lastName"
+                      <input [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
                              [ngModel]="state?.appData?.data?.user?.lastName"
-                             [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
-                             class="form-control">
+                             class="form-control"
+                             name="lastName"
+                             type="text">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label for="email">Email</label>
-                      <input type="text"
-                             name="email"
+                      <input [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
                              [ngModel]="state?.appData?.data?.user?.email"
-                             [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
-                             class="form-control">
+                             class="form-control"
+                             name="email"
+                             type="text">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Phone</label>
-                      <input type="text"
-                             name="phone"
+                      <input [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
                              [ngModel]="state?.appData?.data?.user?.phone"
-                             [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
-                             class="form-control">
+                             class="form-control"
+                             name="phone"
+                             type="text">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Address</label>
-                      <input type="text"
-                             name="address" [ngModel]="state?.appData?.data?.user?.address"
-                             [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
-                             class="form-control">
+                      <input [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
+                             [ngModel]="state?.appData?.data?.user?.address" class="form-control"
+                             name="address"
+                             type="text">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Job Title</label>
-                      <input type="text"
-                             name="title" [ngModel]="state?.appData?.data?.user?.title"
-                             [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
-                             class="form-control">
+                      <input [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
+                             [ngModel]="state?.appData?.data?.user?.title" class="form-control"
+                             name="title"
+                             type="text">
                     </div>
                   </div>
                   <div class="col-md-12">
                     <div class="form-group">
                       <label>Bio</label>
-                      <textarea name="bio"
+                      <textarea [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
                                 [ngModel]="state?.appData?.data?.user?.bio"
-                                [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
-                                class="form-control" rows="4">
+                                class="form-control"
+                                name="bio" rows="4">
                       </textarea>
                     </div>
                   </div>
                 </div>
                 <div>
                   <button [disabled]="state?.appData?.data?.user?.roleName === 'ROLE_USER' || (isLoading$ | async)"
-                          type="submit"
-                          class="btn btn-primary">
+                          class="btn btn-primary"
+                          type="submit">
                     <span *ngIf="isLoading$ | async"
+                          aria-hidden="true"
                           class="spinner-border spinner-border-sm"
                           role="status"
-                          aria-hidden="true"
                           style="margin-right: 5px;">
                     </span>
                     <span *ngIf="isLoading$ | async">Loading...</span>
@@ -137,15 +144,16 @@
                 </div>
               </form>
             </div>
-            <div class="tab-pane fade" id="password-tab" role="tabpanel" aria-labelledby="password" style="min-height: 510px;">
+            <div aria-labelledby="password" class="tab-pane fade" id="password-tab" role="tabpanel"
+                 style="min-height: 510px;">
               <h3 class="mb-4">Password Settings</h3>
               <form>
-                <input type="hidden" name="userId">
+                <input name="userId" type="hidden">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Current password</label>
-                      <input type="password" name="currentPassword" class="form-control" required>
+                      <input class="form-control" name="currentPassword" required type="password">
                     </div>
                   </div>
                 </div>
@@ -153,33 +161,35 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>New password</label>
-                      <input type="password" name="newPassword" class="form-control" minlength="5" required>
+                      <input class="form-control" minlength="5" name="newPassword" required type="password">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Confirm new password</label>
-                      <input type="password" name="confirmPassword" class="form-control" minlength="5" required>
+                      <input class="form-control" minlength="5" name="confirmPassword" required type="password">
                     </div>
                   </div>
                 </div>
                 <div>
-                  <button type="submit" class="btn btn-primary">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin-right: 5px;"></span>
+                  <button class="btn btn-primary" type="submit">
+                    <span aria-hidden="true" class="spinner-border spinner-border-sm" role="status"
+                          style="margin-right: 5px;"></span>
                     <span>Loading...</span>
                     <span>Update</span>
                   </button>
                 </div>
               </form>
             </div>
-            <div class="tab-pane fade" id="security-tab" role="tabpanel" aria-labelledby="security" style="min-height: 510px;">
+            <div aria-labelledby="security" class="tab-pane fade" id="security-tab" role="tabpanel"
+                 style="min-height: 510px;">
               <h3 class="mb-4">Authorization Settings</h3>
               <form>
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label style="margin-bottom: 5px;">Role Name</label>
-                      <select name="roleName" class="form-control select-cl" required>
+                      <select class="form-control select-cl" name="roleName" required>
                         <option class="select-cl">ROLE_ADMIN</option>
                       </select>
                     </div>
@@ -187,35 +197,37 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label style="margin-bottom: 5px;">Role Permissions</label>
-                      <input type="text" class="form-control" style="margin-bottom: 5px;">
+                      <input class="form-control" style="margin-bottom: 5px;" type="text">
                     </div>
                   </div>
                 </div>
                 <div>
-                  <button type="submit" class="btn btn-primary">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin-right: 5px;"></span>
+                  <button class="btn btn-primary" type="submit">
+                    <span aria-hidden="true" class="spinner-border spinner-border-sm" role="status"
+                          style="margin-right: 5px;"></span>
                     <span>Loading...</span>
                     <span>Update</span>
                   </button>
                 </div>
               </form>
             </div>
-            <div class="tab-pane fade" id="application-tab" role="tabpanel" aria-labelledby="application" style="min-height: 510px;">
+            <div aria-labelledby="application" class="tab-pane fade" id="application-tab" role="tabpanel"
+                 style="min-height: 510px;">
               <h3 class="mb-4">Application Settings</h3>
               <form>
-                <input type="hidden" name="userId">
+                <input name="userId" type="hidden">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <div class="form-check">
-                        <input type="checkbox" name="enabled" class="form-check-input">
-                        <label class="form-check-label" >
+                        <input class="form-check-input" name="enabled" type="checkbox">
+                        <label class="form-check-label">
                           Account Active
                         </label>
                       </div>
                       <div class="form-check">
-                        <input type="checkbox" name="notLocked" class="form-check-input">
-                        <label class="form-check-label" >
+                        <input class="form-check-input" name="notLocked" type="checkbox">
+                        <label class="form-check-label">
                           Account Unlocked
                         </label>
                       </div>
@@ -223,15 +235,17 @@
                   </div>
                 </div>
                 <div>
-                  <button type="submit" class="btn btn-primary">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin-right: 5px;"></span>
+                  <button class="btn btn-primary" type="submit">
+                    <span aria-hidden="true" class="spinner-border spinner-border-sm" role="status"
+                          style="margin-right: 5px;"></span>
                     <span>Loading...</span>
                     <span>Update</span>
                   </button>
                 </div>
               </form>
             </div>
-            <div class="tab-pane fade" id="notification-tab" role="tabpanel" aria-labelledby="notification" style="min-height: 510px;">
+            <div aria-labelledby="notification" class="tab-pane fade" id="notification-tab" role="tabpanel"
+                 style="min-height: 510px;">
               <h3 class="mb-4">Authentication Settings</h3>
               <p>These settings help keep your account more secure.</p>
               <div class="list-group mb-5 shadow">
@@ -241,11 +255,13 @@
                       <strong class="mb-2">Multi-Factor Authentication</strong>
                       <span class="badge bg-success mx-3">Enabled</span>
                       <span class="badge bg-warning mx-3">Disabled</span>
-                      <p class="text-muted mb-0">Set up Multi-factor Authentication (MFA) help keep your account more secure</p>
+                      <p class="text-muted mb-0">Set up Multi-factor Authentication (MFA) help keep your account more
+                        secure</p>
                     </div>
                     <div class="col-auto">
                       <button class="btn btn-primary btn-sm">Disable
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin-right: 5px;"></span>
+                        <span aria-hidden="true" class="spinner-border spinner-border-sm" role="status"
+                              style="margin-right: 5px;"></span>
                       </button>
                     </div>
                   </div>
@@ -258,7 +274,7 @@
                     </div>
                     <div class="col-auto">
                       <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="activityLog">
+                        <input class="custom-control-input" id="activityLog" type="checkbox">
                         <span class="custom-control-label"></span>
                       </div>
                     </div>
@@ -273,7 +289,7 @@
             <div class="card" style="border-radius: 8px;">
               <div class="card-body">
                 <h5 class="card-title">Account Activities</h5>
-                <h6 class="card-subtitle mb-2 text-muted">Latest activities on your account.                        </h6>
+                <h6 class="card-subtitle mb-2 text-muted">Latest activities on your account. </h6>
                 <table class="table table-hover">
                   <thead>
                   <tr>
@@ -286,7 +302,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr >
+                  <tr>
                     <td>Chrome</td>
                     <td>192.168.1.209</td>
                     <td>01-15-2023 5:25:20</td>
@@ -297,7 +313,9 @@
                     </td>
                     <td>You logged in successfully</td>
                     <td>
-                      <button type="button" class="btn btn-sm" style="background-color: #fd5d0d; font-weight: 450;">Report</button>
+                      <button class="btn btn-sm" style="background-color: #fd5d0d; font-weight: 450;" type="button">
+                        Report
+                      </button>
                     </td>
                   </tr>
                   </tbody>
@@ -313,6 +331,6 @@
 
 <!-- profile image change form -->
 <form enctype="multipart/form-data" style="display:none;">
-  <input type="file" name="image" id="image"
-         placeholder="file" ngModel accept="image/*" />
+  <input accept="image/*" id="image" name="image"
+         ngModel placeholder="file" type="file"/>
 </form>

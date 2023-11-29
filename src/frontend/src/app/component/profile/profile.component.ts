@@ -13,10 +13,10 @@ import {NgForm} from "@angular/forms";
 })
 export class ProfileComponent implements OnInit {
   profileState$: Observable<State<CustomHttpResponse<Profile>>>;
+  readonly DataState = DataState;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Profile>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingSubject.asObservable();
-  readonly DataState = DataState;
 
   constructor(private userService: UserService) {
   }
@@ -42,14 +42,14 @@ export class ProfileComponent implements OnInit {
       .pipe(
         map(response => {
           console.log(response);
-          this.dataSubject.next({ ...response, data: response.data });
+          this.dataSubject.next({...response, data: response.data});
           this.isLoadingSubject.next(false);
-          return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+          return {dataState: DataState.LOADED, appData: this.dataSubject.value};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
           this.isLoadingSubject.next(false);
-          return of({ dataState: DataState.LOADED, appData: this.dataSubject.value, error })
+          return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
         })
       )
   }

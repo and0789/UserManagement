@@ -5,27 +5,33 @@
         <div class="card">
           <div class="card-body">
             <div class="text-center">
-              <h2><i style="margin-right: 5px;" class="bi bi-safe"></i>User Management</h2>
+              <h2><i class="bi bi-safe" style="margin-right: 5px;"></i>User Management</h2>
               <!-- <p class="lead">Questions? Do not hesitate to contact us.</p> -->
               <h5 class="card-title mt-4 mb-5">Account Login</h5>
               <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
             </div>
-            <div *ngIf="state.dataState === DataState.ERROR" class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show" role="alert">
+            <div *ngIf="state.dataState === DataState.ERROR"
+                 class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show" role="alert">
               {{ state.error }}
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+              <button aria-label="Close" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                      type="button"></button>
             </div>
             <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
               <div class="form-outline mb-4">
                 <label class="form-label" for="email">Email Address</label>
-                <input [disabled]="state.dataState === DataState.LOADING" ngModel type="email" name="email" class="form-control" required>
+                <input [disabled]="state.dataState === DataState.LOADING" class="form-control" name="email" ngModel
+                       required type="email">
               </div>
               <div class="form-outline mb-4">
-                <label for="password" class="form-label">Password</label>
-                <input [disabled]="state.dataState === DataState.LOADING" ngModel type="password" name="password" class="form-control" required>
+                <label class="form-label" for="password">Password</label>
+                <input [disabled]="state.dataState === DataState.LOADING" class="form-control" name="password" ngModel
+                       required type="password">
               </div>
               <div class="d-flex justify-content-center mb-4">
-                <button [disabled]="state.dataState === DataState.LOADING || loginForm.invalid || loginForm.pristine" type="submit" class="btn btn-primary">
-                  <span *ngIf="state.dataState === DataState.LOADING" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin-right: 5px;"></span>
+                <button [disabled]="state.dataState === DataState.LOADING || loginForm.invalid || loginForm.pristine"
+                        class="btn btn-primary" type="submit">
+                  <span *ngIf="state.dataState === DataState.LOADING" aria-hidden="true"
+                        class="spinner-border spinner-border-sm" role="status" style="margin-right: 5px;"></span>
                   <span *ngIf="state.dataState === DataState.LOADING">Loading...</span>
                   <span *ngIf="!(state.dataState === DataState.LOADING)">Log in</span>
                 </button>
@@ -33,10 +39,12 @@
             </form>
             <div class="row mb-4">
               <div class="col d-flex justify-content-center">
-                <a [ngStyle]="{'pointer-events': state.dataState === DataState.LOADING ? 'none': ''}" routerLink="/register">Create an Account</a>
+                <a [ngStyle]="{'pointer-events': state.dataState === DataState.LOADING ? 'none': ''}"
+                   routerLink="/register">Create an Account</a>
               </div>
               <div class="col">
-                <a [ngStyle]="{'pointer-events': state.dataState === DataState.LOADING ? 'none': ''}" routerLink="/resetpassword">Forgot password?</a>
+                <a [ngStyle]="{'pointer-events': state.dataState === DataState.LOADING ? 'none': ''}"
+                   routerLink="/resetpassword">Forgot password?</a>
               </div>
             </div>
           </div>
@@ -53,23 +61,29 @@
         <div class="card">
           <div class="card-body">
             <div class="text-center">
-              <h2><i style="margin-right: 5px;" class="bi bi-safe"></i>User Management</h2>
+              <h2><i class="bi bi-safe" style="margin-right: 5px;"></i>User Management</h2>
               <h5 class="card-title mt-4 mb-4">Verification Code Sent To ...{{ state.phone }}</h5>
               <i class="bi bi-check-circle-fill" style="font-size: 30px;color: green;"></i>
               <p class="mt-2" style="font-size: 20px;">Please access your SMS and enter the code.</p>
             </div>
-            <div *ngIf="state.dataState === DataState.ERROR" class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show" role="alert">
+            <div *ngIf="state.dataState === DataState.ERROR"
+                 class="alert alert-danger bg-danger text-light border-0 alert-dismissible fade show" role="alert">
               {{ state.error }}
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+              <button aria-label="Close" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                      type="button"></button>
             </div>
             <form #verifyCodeForm="ngForm" (ngSubmit)="verifyCode(verifyCodeForm)">
               <div class="form-outline mb-4">
                 <label class="form-label" for="code">Verirfication Code</label>
-                <input [disabled]="state.dataState === DataState.LOADING" ngModel type="text" name="code" class="form-control" required>
+                <input [disabled]="state.dataState === DataState.LOADING" class="form-control" name="code" ngModel
+                       required type="text">
               </div>
               <div class="d-flex justify-content-center mb-4">
-                <button [disabled]="state.dataState === DataState.LOADING || verifyCodeForm.invalid || verifyCodeForm.pristine" type="submit" class="btn btn-primary">
-                  <span *ngIf="state.dataState === DataState.LOADING" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin-right: 5px;"></span>
+                <button
+                  [disabled]="state.dataState === DataState.LOADING || verifyCodeForm.invalid || verifyCodeForm.pristine"
+                  class="btn btn-primary" type="submit">
+                  <span *ngIf="state.dataState === DataState.LOADING" aria-hidden="true"
+                        class="spinner-border spinner-border-sm" role="status" style="margin-right: 5px;"></span>
                   <span *ngIf="state.dataState === DataState.LOADING">Loading...</span>
                   <span *ngIf="!(state.dataState === DataState.LOADING)">Verify Code</span>
                 </button>
@@ -77,10 +91,12 @@
             </form>
             <div class="row mb-4">
               <div class="col d-flex justify-content-center">
-                <a (click)="loginPage()" style="color: #0D6EFD; text-decoration: underline; cursor: pointer;">Account Login</a>
+                <a (click)="loginPage()" style="color: #0D6EFD; text-decoration: underline; cursor: pointer;">Account
+                  Login</a>
               </div>
               <div class="col">
-                <a [routerLink]="['/register']" style="color: #0D6EFD; text-decoration: underline; cursor: pointer;">Create an account</a>
+                <a [routerLink]="['/register']" style="color: #0D6EFD; text-decoration: underline; cursor: pointer;">Create
+                  an account</a>
               </div>
             </div>
           </div>

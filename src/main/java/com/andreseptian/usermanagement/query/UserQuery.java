@@ -59,8 +59,8 @@ public class UserQuery {
 
     public static final String SELECT_USER_BY_ID_QUERY =
             "SELECT * FROM Users " +
-                    "WHERE id = :id";;
-
+                    "WHERE id = :id";
+    ;
 
 
 }
