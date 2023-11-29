@@ -15,11 +15,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static com.andreseptian.usermanagement.utils.ExceptionUtils.processError;
 import static java.util.Arrays.asList;
-import static java.util.Map.of;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -39,7 +37,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filter) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filter)
+            throws ServletException, IOException {
         try {
             String token = getToken(request);
             Long userId = getUserId(request);
@@ -60,8 +59,10 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getHeader(AUTHORIZATION) == null || !request.getHeader(AUTHORIZATION).startsWith(TOKEN_PREFIX) ||
-                request.getMethod().equalsIgnoreCase(HTTP_OPTIONS_METHOD) || asList(PUBLIC_ROUTES).contains(request.getRequestURI());
+        return request.getHeader(AUTHORIZATION) == null
+                || !request.getHeader(AUTHORIZATION).startsWith(TOKEN_PREFIX)
+                || request.getMethod().equalsIgnoreCase(HTTP_OPTIONS_METHOD)
+                || asList(PUBLIC_ROUTES).contains(request.getRequestURI());
     }
 
     private Long getUserId(HttpServletRequest request) {
