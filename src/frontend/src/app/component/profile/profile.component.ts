@@ -6,6 +6,7 @@ import {DataState} from 'src/app/enum/datastate.enum';
 import {Component, OnInit} from '@angular/core';
 import {NgForm} from "@angular/forms";
 
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -132,4 +133,36 @@ export class ProfileComponent implements OnInit {
       )
   }
 
+  updatePicture(image: File): void {
+
+    if (image) {
+      this.isLoadingSubject.next(true);
+      this.profileState$ = this.userService.updateImage$(this.getFormData(image))
+        .pipe(
+          map(response => {
+            console.log(response);
+            this.dataSubject.next({
+              ...response,
+              data: {
+                ...response.data,
+                user: {...response.data.user, imageUrl: `${response.data.user.imageUrl}?time=${new Date().getTime()}`}
+              }
+            });
+            this.isLoadingSubject.next(false);
+            return {dataState: DataState.LOADED, appData: this.dataSubject.value};
+          }),
+          startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
+          catchError((error: string) => {
+            this.isLoadingSubject.next(false);
+            return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
+          })
+        )
+    }
+  }
+
+  private getFormData(image: File): FormData {
+    const formData = new FormData();
+    formData.append('image', image);
+    return formData;
+  }
 }

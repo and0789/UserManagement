@@ -35,7 +35,8 @@ public class SecurityConfig {
             "/user/resetPassword/**",
             "/user/verify/password/**",
             "/user/verify/account/**",
-            "/user/refresh/token/**"
+            "/user/refresh/token/**",
+            "/user/image/**"
     };
     private final BCryptPasswordEncoder encoder;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;

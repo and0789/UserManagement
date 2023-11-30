@@ -3,6 +3,7 @@ package com.andreseptian.usermanagement.service;
 import com.andreseptian.usermanagement.domain.User;
 import com.andreseptian.usermanagement.dto.UserDTO;
 import com.andreseptian.usermanagement.form.UpdateForm;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
     UserDTO createUser(User user);
@@ -32,5 +33,7 @@ public interface UserService {
     void updateAccountSettings(Long id, Boolean enabled, Boolean notLocked);
 
     UserDTO toggleMfa(String email);
+
+    void updateImage(UserDTO user, MultipartFile image);
 }
 

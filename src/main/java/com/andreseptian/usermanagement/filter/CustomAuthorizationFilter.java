@@ -31,7 +31,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             "/user/login",
             "/user/verify/code",
             "/user/register",
-            "/user/refresh/token"
+            "/user/refresh/token",
+            "/user/image"
     };
     private static final String HTTP_OPTIONS_METHOD = "OPTIONS";
     private final TokenProvider tokenProvider;
