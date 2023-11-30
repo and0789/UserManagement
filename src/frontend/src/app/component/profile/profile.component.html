@@ -1,9 +1,16 @@
 <ng-container *ngIf="(profileState$ | async) as state">
   <ng-container>
+
+    <!-- NAVBAR -->
     <app-navbar></app-navbar>
+
     <!-- <div>{{ state | json }} </div> -->
+
     <section>
+      <!-- Main  -->
       <div class="container">
+
+        <!-- Link page -->
         <nav aria-label="breadcrumb" style="margin-top: 8px;">
           <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -15,9 +22,15 @@
             </li>
           </ol>
         </nav>
+
+        <!-- Main Page -->
         <div class="bg-white shadow rounded-lg d-block d-sm-flex" style="border-radius: 8px;">
+
+          <!-- Profile Tab Nav  -->
           <div class="profile-tab-nav border-right">
+            <!-- Head Profile  -->
             <div class="p-4">
+              <!-- Image Profile   -->
               <div class="img-circle text-center mb-3">
                          <span style="position: relative">
                              <img [src]="state?.appData?.data?.user?.imageUrl" alt="Andre" class="shadow"/>
@@ -29,6 +42,8 @@
                 class="text-center">{{ state?.appData?.data?.user?.firstName }} {{ state?.appData?.data?.user?.lastName }}</h4>
               <span class="">Since {{ state?.appData?.data?.user?.createdAt | date: 'MMMM d, y' }}</span>
             </div>
+
+            <!-- Menu Profile  -->
             <div aria-orientation="vertical" class="nav flex-column nav-pills" id="v-pills-tab" role="tablist">
               <a aria-controls="profile" aria-selected="true" class="nav-link active" data-bs-target="#profile-tab"
                  data-bs-toggle="pill" id="profile" role="tab">
@@ -52,8 +67,9 @@
               </a>
             </div>
           </div>
-          <div class="tab-content p-4 p-md-5" id="v-pills-tabContent" style="border-left: 1px solid #d4d0d0;">
 
+          <!-- Content Profile  -->
+          <div class="tab-content p-4 p-md-5" id="v-pills-tabContent" style="border-left: 1px solid #d4d0d0;">
             <!--Profile TAB-->
             <div aria-labelledby="profile" class="tab-pane fade show active" id="profile-tab" role="tabpanel"
                  style="min-height: 510px;">
@@ -174,7 +190,8 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Confirm new password</label>
-                      <input [disabled]="(isLoading$ | async)" class="form-control" minlength="5" name="confirmNewPassword"
+                      <input [disabled]="(isLoading$ | async)" class="form-control" minlength="5"
+                             name="confirmNewPassword"
                              ngModel required type="password">
                     </div>
                   </div>
@@ -192,37 +209,47 @@
             </div>
 
             <!--Authorization TAB-->
-            <div aria-labelledby="security" class="tab-pane fade" id="security-tab" role="tabpanel"
+            <div class="tab-pane fade" id="security-tab" role="tabpanel" aria-labelledby="security"
                  style="min-height: 510px;">
               <h3 class="mb-4">Authorization Settings</h3>
-              <form>
+              <form #roleForm="ngForm" (ngSubmit)="updateRole(roleForm)">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label style="margin-bottom: 5px;">Role Name</label>
-                      <select class="form-control select-cl" name="roleName" required>
-                        <option class="select-cl">ROLE_ADMIN</option>
+                      <select name="roleName" [ngModel]="state?.appData?.data?.user?.roleName"
+                              [disabled]="!(state?.appData?.data?.user?.roleName === 'ROLE_SYSADMIN' || state?.appData?.data?.user?.roleName === 'ROLE_ADMIN') || (isLoading$ | async)"
+                              class="form-control select-cl" required>
+                        <option *ngFor="let role of state?.appData?.data?.roles"
+                                [selected]="state?.appData?.data?.user?.roleName === role.name"
+                                [disabled]="!(state?.appData?.data?.user?.roleName === 'ROLE_SYSADMIN' || state?.appData?.data?.user?.roleName === 'ROLE_ADMIN') || (isLoading$ | async)"
+                                [ngValue]="role.name"
+                                class="select-cl">{{ role.name }}</option>
                       </select>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label style="margin-bottom: 5px;">Role Permissions</label>
-                      <input class="form-control" style="margin-bottom: 5px;" type="text">
+                      <input type="text" *ngFor="let permission of state?.appData?.data?.user?.permissions.split(',')"
+                             [value]="permission" [disabled]="true" class="form-control" style="margin-bottom: 5px;">
                     </div>
                   </div>
                 </div>
                 <div>
-                  <button class="btn btn-primary" type="submit">
-                    <span aria-hidden="true" class="spinner-border spinner-border-sm" role="status"
-                          style="margin-right: 5px;"></span>
-                    <span>Loading...</span>
-                    <span>Update</span>
+                  <button
+                    [disabled]="!(state?.appData?.data?.user?.roleName === 'ROLE_SYSADMIN' || state?.appData?.data?.user?.roleName === 'ROLE_ADMIN') || (isLoading$ | async)"
+                    type="submit" class="btn btn-primary">
+                    <span *ngIf="isLoading$ | async" class="spinner-border spinner-border-sm" role="status"
+                          aria-hidden="true" style="margin-right: 5px;"></span>
+                    <span *ngIf="isLoading$ | async">Loading...</span>
+                    <span *ngIf="!(isLoading$ | async)">Update</span>
                   </button>
                 </div>
               </form>
             </div>
 
+            <!--Application TAB-->
             <div aria-labelledby="application" class="tab-pane fade" id="application-tab" role="tabpanel"
                  style="min-height: 510px;">
               <h3 class="mb-4">Application Settings</h3>
@@ -256,6 +283,8 @@
                 </div>
               </form>
             </div>
+
+            <!--Notification TAB-->
             <div aria-labelledby="notification" class="tab-pane fade" id="notification-tab" role="tabpanel"
                  style="min-height: 510px;">
               <h3 class="mb-4">Authentication Settings</h3>
@@ -296,6 +325,8 @@
             </div>
           </div>
         </div>
+
+        <!--Account Activities-->
         <div class="row">
           <div class="col-xl-12 mt-4">
             <div class="card" style="border-radius: 8px;">
@@ -336,7 +367,9 @@
             </div>
           </div>
         </div>
+
       </div>
+
     </section>
   </ng-container>
 </ng-container>
