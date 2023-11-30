@@ -6,6 +6,7 @@ import com.andreseptian.usermanagement.domain.UserPrincipal;
 import com.andreseptian.usermanagement.dto.UserDTO;
 import com.andreseptian.usermanagement.exception.ApiException;
 import com.andreseptian.usermanagement.form.LoginForm;
+import com.andreseptian.usermanagement.form.SettingsForm;
 import com.andreseptian.usermanagement.form.UpdateForm;
 import com.andreseptian.usermanagement.form.UpdatePasswordForm;
 import com.andreseptian.usermanagement.provider.TokenProvider;
@@ -178,6 +179,20 @@ public class UserResource {
                         .data(of("user", userService.getUserById(userDTO.getId()), "roles", roleService.getRoles()))
                         .timeStamp(now().toString())
                         .message("Role updated successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PatchMapping("/update/settings")
+    public ResponseEntity<HttpResponse> updateAccountSettings(Authentication authentication, @RequestBody @Valid SettingsForm form) {
+        UserDTO userDTO = getAuthenticatedUser(authentication);
+        userService.updateAccountSettings(userDTO.getId(), form.getEnabled(), form.getNotLocked());
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .data(of("user", userService.getUserById(userDTO.getId()), "roles", roleService.getRoles()))
+                        .timeStamp(now().toString())
+                        .message("Account settings updated successfully")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
