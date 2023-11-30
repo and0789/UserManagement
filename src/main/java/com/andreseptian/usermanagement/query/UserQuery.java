@@ -71,4 +71,9 @@ public class UserQuery {
                     "SET enabled = :enabled, non_locked = :notLocked " +
                     "WHERE id = :userId";
 
+    public static final String TOGGLE_USER_MFA_QUERY =
+            "UPDATE Users " +
+                    "SET using_mfa = :isUsingMfa " +
+                    "WHERE email = :email";
+
 }
