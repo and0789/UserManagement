@@ -166,16 +166,14 @@
             </div>
 
             <!--Password TAB-->
-            <div aria-labelledby="password" class="tab-pane fade" id="password-tab" role="tabpanel"
-                 style="min-height: 510px;">
+            <div class="tab-pane fade" id="password-tab" role="tabpanel" aria-labelledby="password" style="min-height: 510px;">
               <h3 class="mb-4">Password Settings</h3>
               <form #passwordForm="ngForm" (ngSubmit)="updatePassword(passwordForm)">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Current password</label>
-                      <input [disabled]="(isLoading$ | async)" class="form-control" name="currentPassword" ngModel
-                             required type="password">
+                      <input type="password" name="currentPassword" ngModel [disabled]="(isLoading$ | async)" class="form-control" required>
                     </div>
                   </div>
                 </div>
@@ -183,24 +181,19 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>New password</label>
-                      <input [disabled]="(isLoading$ | async)" class="form-control" minlength="5" name="newPassword"
-                             ngModel required type="password">
+                      <input type="password" name="newPassword" ngModel [disabled]="(isLoading$ | async)" class="form-control" minlength="5" required>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Confirm new password</label>
-                      <input [disabled]="(isLoading$ | async)" class="form-control" minlength="5"
-                             name="confirmNewPassword"
-                             ngModel required type="password">
+                      <input type="password" name="confirmNewPassword" ngModel [disabled]="(isLoading$ | async)" class="form-control" minlength="5" required>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <button [disabled]="passwordForm.invalid || (isLoading$ | async)" class="btn btn-primary"
-                          type="submit">
-                    <span *ngIf="isLoading$ | async" aria-hidden="true" class="spinner-border spinner-border-sm"
-                          role="status" style="margin-right: 5px;"></span>
+                  <button [disabled]="passwordForm.invalid || (isLoading$ | async)" type="submit" class="btn btn-primary">
+                    <span *ngIf="isLoading$ | async" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="margin-right: 5px;"></span>
                     <span *ngIf="isLoading$ | async">Loading...</span>
                     <span *ngIf="!(isLoading$ | async)">Update</span>
                   </button>
@@ -226,7 +219,8 @@
                                 [disabled]="!(state?.appData?.data?.user?.roleName === 'ROLE_SYSADMIN' || state?.appData?.data?.user?.roleName === 'ROLE_ADMIN') || (isLoading$ | async)"
                                 [ngValue]="role.name"
                                 [selected]="state?.appData?.data?.user?.roleName === role.name"
-                                class="select-cl">{{ role.name }}</option>
+                                class="select-cl">{{ role.name }}
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -331,7 +325,8 @@
                     </div>
                     <div class="col-auto">
                       <div class="custom-control custom-switch">
-                        <input class="custom-control-input" id="activityLog" type="checkbox">
+                        <input type="checkbox" (change)="toggleLogs()" [disabled]="(isLoading$ | async)"
+                               [checked]="(showLogs$ | async)" class="custom-control-input" id="activityLog">
                         <span class="custom-control-label"></span>
                       </div>
                     </div>
@@ -344,7 +339,7 @@
         </div>
 
         <!--Account Activities-->
-        <div class="row">
+        <div *ngIf="(showLogs$ | async)" class="row">
           <div class="col-xl-12 mt-4">
             <div class="card" style="border-radius: 8px;">
               <div class="card-body">
@@ -362,18 +357,28 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>Chrome</td>
-                    <td>192.168.1.209</td>
-                    <td>01-15-2023 5:25:20</td>
+                  <tr *ngFor="let event of state?.appData?.data?.events">
+                    <td>{{ event.device }}</td>
+                    <td>{{ event.ipAddress }}</td>
+                    <td>{{ event.createdAt | date: 'MMMM d, y, h:mm a' }}</td>
                     <td>
-                                     <span class="badge pill bg-success">
-                                             LOGIN_ATTEMPT_SUCCESS
+                                    <span class="badge pill" [ngClass]="[
+                                    event.type === EventType.LOGIN_ATTEMPT_SUCCESS ? 'bg-success' : '',
+                                    event.type === EventType.LOGIN_ATTEMPT ? 'bg-warning' : '',
+                                    event.type === EventType.PROFILE_UPDATE ? 'bg-primary' : '',
+                                    event.type === EventType.LOGIN_ATTEMPT_FAILURE ? 'bg-danger' : '',
+                                    event.type === EventType.PROFILE_PICTURE_UPDATE ? 'bg-primary' : '',
+                                    event.type === EventType.ROLE_UPDATE ? 'bg-info' : '',
+                                    event.type === EventType.ACCOUNT_SETTINGS_UPDATE ? 'bg-warning' : '',
+                                    event.type === EventType.PASSWORD_UPDATE ? 'bg-warning' : '',
+                                    event.type === EventType.MFA_UPDATE ? 'bg-info' : ''
+                                    ]">
+                                       {{ event.type }}
                                      </span>
                     </td>
-                    <td>You logged in successfully</td>
+                    <td>{{ event.description }}</td>
                     <td>
-                      <button class="btn btn-sm" style="background-color: #fd5d0d; font-weight: 450;" type="button">
+                      <button type="button" class="btn btn-sm" style="background-color: #fd5d0d; font-weight: 450;">
                         Report
                       </button>
                     </td>

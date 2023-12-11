@@ -4,6 +4,7 @@ import {UserService} from 'src/app/service/user.service';
 import {Observable, of, BehaviorSubject, map, startWith, catchError} from 'rxjs';
 import {DataState} from 'src/app/enum/datastate.enum';
 import {Component, OnInit} from '@angular/core';
+import {EventType} from 'src/app/enum/event-type.enum';
 import {NgForm} from "@angular/forms";
 
 
@@ -14,10 +15,14 @@ import {NgForm} from "@angular/forms";
 })
 export class ProfileComponent implements OnInit {
   profileState$: Observable<State<CustomHttpResponse<Profile>>>;
-  readonly DataState = DataState;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Profile>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingSubject.asObservable();
+  private showLogsSubject = new BehaviorSubject<boolean>(false);
+  showLogs$ = this.showLogsSubject.asObservable();
+  readonly DataState = DataState;
+  readonly EventType = EventType;
+
 
   constructor(private userService: UserService) {
   }
@@ -62,15 +67,16 @@ export class ProfileComponent implements OnInit {
         .pipe(
           map(response => {
             console.log(response);
+            this.dataSubject.next({ ...response, data: response.data });
             passwordForm.reset();
             this.isLoadingSubject.next(false);
-            return {dataState: DataState.LOADED, appData: this.dataSubject.value};
+            return { dataState: DataState.LOADED, appData: this.dataSubject.value };
           }),
-          startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
+          startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
           catchError((error: string) => {
             passwordForm.reset();
             this.isLoadingSubject.next(false);
-            return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
+            return of({ dataState: DataState.LOADED, appData: this.dataSubject.value, error })
           })
         )
     } else {
@@ -158,6 +164,10 @@ export class ProfileComponent implements OnInit {
           })
         )
     }
+  }
+
+  toggleLogs(): void {
+    this.showLogsSubject.next(!this.showLogsSubject.value);
   }
 
   private getFormData(image: File): FormData {
