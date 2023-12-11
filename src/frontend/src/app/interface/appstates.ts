@@ -1,7 +1,7 @@
-import {DataState} from "../enum/datastate.enum";
-import {User} from "./user";
-import {Events} from "./event";
-import {Role} from "./role";
+import { DataState } from "../enum/datastate.enum";
+import { Events } from "./event";
+import { Role } from "./role";
+import { User } from "./user";
 
 export interface LoginState {
   dataState: DataState;

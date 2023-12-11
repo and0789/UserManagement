@@ -1,22 +1,23 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {catchError, Observable, tap, throwError} from 'rxjs';
-import {CustomHttpResponse, Profile} from '../interface/appstates';
-import {User} from '../interface/user';
-import {Key} from '../enum/key.enum';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { catchError, Observable, tap, throwError } from 'rxjs';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { CustomHttpResponse, Profile } from '../interface/appstates';
+import { User } from '../interface/user';
+import { Key } from '../enum/key.enum';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   private readonly server: string = 'http://localhost:8080';
+  private jwtHelper = new JwtHelperService();
 
-  constructor(private http: HttpClient) {
-  }
+  constructor(private http: HttpClient) { }
 
   login$ = (email: string, password: string) => <Observable<CustomHttpResponse<Profile>>>
     this.http.post<CustomHttpResponse<Profile>>
-    (`${this.server}/user/login`, {email, password})
+    (`${this.server}/user/login`, { email, password })
       .pipe(
         tap(console.log),
         catchError(this.handleError)
@@ -48,7 +49,7 @@ export class UserService {
 
   refreshToken$ = () => <Observable<CustomHttpResponse<Profile>>>
     this.http.get<CustomHttpResponse<Profile>>
-    (`${this.server}/user/refresh/token`, {headers: {Authorization: `Bearer ${localStorage.getItem(Key.REFRESH_TOKEN)}`}})
+    (`${this.server}/user/refresh/token`, { headers: { Authorization: `Bearer ${localStorage.getItem(Key.REFRESH_TOKEN)}` } })
       .pipe(
         tap(response => {
           console.log(response);
@@ -60,11 +61,7 @@ export class UserService {
         catchError(this.handleError)
       );
 
-  updatePassword$ = (form: {
-    currentPassword: string,
-    newPassword: string,
-    confirmNewPassword: string
-  }) => <Observable<CustomHttpResponse<Profile>>>
+  updatePassword$ = (form: { currentPassword: string, newPassword: string, confirmNewPassword: string }) => <Observable<CustomHttpResponse<Profile>>>
     this.http.patch<CustomHttpResponse<Profile>>
     (`${this.server}/user/update/password`, form)
       .pipe(
@@ -80,10 +77,7 @@ export class UserService {
         catchError(this.handleError)
       );
 
-  updateAccountSettings$ = (settings: {
-    enabled: boolean,
-    notLocked: boolean
-  }) => <Observable<CustomHttpResponse<Profile>>>
+  updateAccountSettings$ = (settings: { enabled: boolean, notLocked: boolean }) => <Observable<CustomHttpResponse<Profile>>>
     this.http.patch<CustomHttpResponse<Profile>>
     (`${this.server}/user/update/settings`, settings)
       .pipe(
@@ -106,6 +100,14 @@ export class UserService {
         tap(console.log),
         catchError(this.handleError)
       );
+
+
+  logOut() {
+    localStorage.removeItem(Key.TOKEN);
+    localStorage.removeItem(Key.REFRESH_TOKEN);
+  }
+
+  isAuthenticated = (): boolean => (this.jwtHelper.decodeToken<string>(localStorage.getItem(Key.TOKEN)) && !this.jwtHelper.isTokenExpired(localStorage.getItem(Key.TOKEN))) ? true : false;
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.log(error);

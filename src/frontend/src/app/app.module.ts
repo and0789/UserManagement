@@ -37,8 +37,7 @@ import {TokenInterceptor} from "./interceptor/token.interceptor";
     HttpClientModule,
     FormsModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}],
+  providers: [ { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule { }
