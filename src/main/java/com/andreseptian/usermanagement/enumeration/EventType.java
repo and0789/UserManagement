@@ -12,9 +12,11 @@ public enum EventType {
     PASSWORD_UPDATE("You updated your password");
 
     private final String description;
+
     EventType(String description) {
         this.description = description;
     }
+
     public String getDescription() {
         return this.description;
     }

@@ -13,6 +13,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
+
     @Override
     public Collection<UserEvent> getEventsByUserId(Long userId) {
         return eventRepository.getEventsByUserId(userId);
