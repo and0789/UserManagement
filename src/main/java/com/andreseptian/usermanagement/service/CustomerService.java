@@ -2,6 +2,7 @@ package com.andreseptian.usermanagement.service;
 
 import com.andreseptian.usermanagement.domain.Customer;
 import com.andreseptian.usermanagement.domain.Invoice;
+import com.andreseptian.usermanagement.domain.Stats;
 import org.springframework.data.domain.Page;
 
 public interface CustomerService {
@@ -29,4 +30,5 @@ public interface CustomerService {
     Invoice getInvoice(Long id);
 
 
+    Stats getStats();
 }

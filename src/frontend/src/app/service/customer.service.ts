@@ -4,6 +4,7 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { CustomHttpResponse, Page, Profile } from '../interface/appstates';
 import { User } from '../interface/user';
 import { Key } from '../enum/key.enum';
+import {Stats} from "../interface/stats";
 
 @Injectable({ providedIn: 'root' })
 export class CustomerService {
@@ -11,8 +12,8 @@ export class CustomerService {
 
   constructor(private http: HttpClient) { }
 
-  customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page & User>>>
-    this.http.get<CustomHttpResponse<Page & User>>
+  customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page & User & Stats>>>
+    this.http.get<CustomHttpResponse<Page & User & Stats>>
     (`${this.server}/customer/list?page=${page}`)
       .pipe(
         tap(console.log),
