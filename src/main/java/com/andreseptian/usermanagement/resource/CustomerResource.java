@@ -145,13 +145,13 @@ public class CustomerResource {
     }
 
     @GetMapping("/invoice/get/{id}")
-    public ResponseEntity<HttpResponse> getInvoice(@AuthenticationPrincipal UserDTO user,
-                                                   @PathVariable("id") Long id) {
+    public ResponseEntity<HttpResponse> getInvoice(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id) {
+        Invoice invoice = customerService.getInvoice(id);
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "invoice", customerService.getInvoice(id)))
+                                "invoice", invoice, "customer", invoice.getCustomer()))
                         .message("Invoice retrieved")
                         .status(OK)
                         .statusCode(OK.value())

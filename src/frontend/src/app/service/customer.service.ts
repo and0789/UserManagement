@@ -79,7 +79,13 @@ export class CustomerService {
         catchError(this.handleError)
       );
 
-
+  invoice$ = (invoiceId: number) => <Observable<CustomHttpResponse<Customer & Invoice & User>>>
+    this.http.get<CustomHttpResponse<Customer & Invoice & User>>
+    (`${this.server}/customer/invoice/get/${invoiceId}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
 
 
   private handleError(error: HttpErrorResponse): Observable<never> {
