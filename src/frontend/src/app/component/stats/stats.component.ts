@@ -10,5 +10,4 @@ export class StatsComponent {
   @Input() stats: Stats;
 
 
-
 }

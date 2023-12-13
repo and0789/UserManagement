@@ -3,7 +3,7 @@ import {BehaviorSubject, catchError, map, Observable, of, startWith} from "rxjs"
 import {State} from "../../interface/state";
 import {CustomHttpResponse, Page} from "../../interface/appstates";
 import {User} from "../../interface/user";
-import { DataState } from 'src/app/enum/datastate.enum';
+import {DataState} from 'src/app/enum/datastate.enum';
 import {CustomerService} from "../../service/customer.service";
 import {NgForm} from "@angular/forms";
 
@@ -14,12 +14,13 @@ import {NgForm} from "@angular/forms";
 })
 export class NewcustomerComponent implements OnInit {
   newCustomerState$: Observable<State<CustomHttpResponse<Page & User>>>;
+  readonly DataState = DataState;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Page & User>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingSubject.asObservable();
-  readonly DataState = DataState;
 
-  constructor(private customerService: CustomerService) { }
+  constructor(private customerService: CustomerService) {
+  }
 
   ngOnInit(): void {
     this.newCustomerState$ = this.customerService.customers$()
@@ -27,11 +28,11 @@ export class NewcustomerComponent implements OnInit {
         map(response => {
           console.log(response);
           this.dataSubject.next(response);
-          return { dataState: DataState.LOADED, appData: response };
+          return {dataState: DataState.LOADED, appData: response};
         }),
-        startWith({ dataState: DataState.LOADING }),
+        startWith({dataState: DataState.LOADING}),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, error })
+          return of({dataState: DataState.ERROR, error})
         })
       )
   }
@@ -42,14 +43,14 @@ export class NewcustomerComponent implements OnInit {
       .pipe(
         map(response => {
           console.log(response);
-          newCustomerForm.reset({ type: 'INDIVIDUAL', status: 'ACTIVE' });
+          newCustomerForm.reset({type: 'INDIVIDUAL', status: 'ACTIVE'});
           this.isLoadingSubject.next(false);
-          return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+          return {dataState: DataState.LOADED, appData: this.dataSubject.value};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
           this.isLoadingSubject.next(false);
-          return of({ dataState: DataState.LOADED, error })
+          return of({dataState: DataState.LOADED, error})
         })
       )
   }

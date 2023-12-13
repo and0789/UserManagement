@@ -22,9 +22,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-        this.userService.isAuthenticated() ?
-          this.router.navigate(['/']) : this.router.navigate(['/login']);
-    }
+    this.userService.isAuthenticated() ?
+      this.router.navigate(['/']) : this.router.navigate(['/login']);
+  }
 
   login(loginForm: NgForm): void {
     this.loginState$ = this.userService.login$(loginForm.value.email, loginForm.value.password)

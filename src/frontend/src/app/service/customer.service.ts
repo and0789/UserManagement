@@ -1,21 +1,38 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { catchError, Observable, tap, throwError } from 'rxjs';
-import { CustomHttpResponse, Page, Profile } from '../interface/appstates';
-import { User } from '../interface/user';
-import { Key } from '../enum/key.enum';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {catchError, Observable, tap, throwError} from 'rxjs';
+import {CustomerState, CustomHttpResponse, Page, Profile} from '../interface/appstates';
+import {User} from '../interface/user';
+import {Key} from '../enum/key.enum';
 import {Stats} from "../interface/stats";
 import {Customer} from "../interface/customer";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class CustomerService {
   private readonly server: string = 'http://localhost:8080';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   customers$ = (page: number = 0) => <Observable<CustomHttpResponse<Page & User & Stats>>>
     this.http.get<CustomHttpResponse<Page & User & Stats>>
     (`${this.server}/customer/list?page=${page}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  customer$ = (customerId: number) => <Observable<CustomHttpResponse<CustomerState>>>
+    this.http.get<CustomHttpResponse<CustomerState>>
+    (`${this.server}/customer/get/${customerId}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  update$ = (customer: Customer) => <Observable<CustomHttpResponse<CustomerState>>>
+    this.http.put<CustomHttpResponse<CustomerState>>
+    (`${this.server}/customer/update`, customer)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
@@ -36,7 +53,6 @@ export class CustomerService {
         tap(console.log),
         catchError(this.handleError)
       );
-
 
 
   private handleError(error: HttpErrorResponse): Observable<never> {

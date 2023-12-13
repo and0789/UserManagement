@@ -8,7 +8,7 @@
             <li class="breadcrumb-item">
               <a [routerLink]="['/']">Home</a>
             </li>
-            <li class="breadcrumb-item active"> Customers </li>
+            <li class="breadcrumb-item active"> Customers</li>
           </ol>
         </nav>
         <div class="row mt-3">
@@ -16,16 +16,17 @@
             <h4 class="fw-bold text-start">Customers</h4>
           </div>
           <div class="col">
-            <h4 class="fw-bold text-end"><i style="cursor: pointer;color: green;font-size: 30px;" class="bi bi-file-earmark-excel"></i></h4>
+            <h4 class="fw-bold text-end"><i class="bi bi-file-earmark-excel"
+                                            style="cursor: pointer;color: green;font-size: 30px;"></i></h4>
           </div>
           <div class="col-xm-12">
             <form #searchForm="ngForm" (ngSubmit)="searchCustomers(searchForm)" class="row g-3 float-end">
               <div class="col-auto">
-                <label for="name" class="visually-hidden"></label>
-                <input type="text" ngModel name="name" #name class="form-control" placeholder="Customer Name">
+                <label class="visually-hidden" for="name"></label>
+                <input #name class="form-control" name="name" ngModel placeholder="Customer Name" type="text">
               </div>
               <div class="col-auto">
-                <button type="submit" class="btn btn-primary mb-3">Search Customers</button>
+                <button class="btn btn-primary mb-3" type="submit">Search Customers</button>
               </div>
             </form>
           </div>
@@ -46,25 +47,26 @@
               <tbody class="table-body">
               <tr *ngFor="let customer of state?.appData?.data?.page.content" class="cell-1">
                 <th class="text-center">{{ customer.id }}</th>
-                <td><img [src]="customer.imageUrl" width="42" height="42" class="rounded-circle" [alt]="customer.name"></td>
+                <td><img [alt]="customer.name" [src]="customer.imageUrl" class="rounded-circle" height="42" width="42">
+                </td>
                 <td>{{ customer.name }}</td>
                 <td>{{ customer.email }}</td>
                 <td>{{ customer.phone }}</td>
                 <td>
-                   <span class="badge"
-                         [ngClass]="[
+                   <span [ngClass]="[
                         customer.status === 'ACTIVE' ? ' bg-success' : '',
                         customer.status === 'PENDING' ? ' bg-primary' : '',
                         customer.status === 'BANNED' ? ' bg-danger' : '',
                         customer.status === 'INACTIVE' ? ' bg-info' : '',]"
+                         class="badge"
                    >
                       {{ customer.status }}
                    </span>
                 </td>
                 <td>{{ customer.type }}</td>
                 <td>
-                  <button type="button" [routerLink]="['/customers', customer.id]" class="btn btn-info">View</button>
-                  <!-- <button type="button" (click)="selectCustomer(customer)" class="btn btn-info">View</button> -->
+                  <button [routerLink]="['/customers', customer.id]" class="btn btn-info" type="button">View</button>
+                  <!--<button type="button" (click)="selectCustomer(customer)" class="btn btn-info">View</button>-->
                 </td>
               </tr>
               </tbody>
@@ -73,15 +75,20 @@
             <nav *ngIf="state?.appData?.data?.page.content.length > 0" aria-label="Page navigation example">
               <ul class="pagination justify-content-end">
                 <li [ngClass]="0 == (currentPage$ | async) ? ' disabled' : ''" class="page-item pointer">
-                  <a (click)="goToNextOrPreviousPage('backward', searchForm.value.name)" class="page-link">&laquo; Prev</a>
+                  <a (click)="goToNextOrPreviousPage('backward', searchForm.value.name)" class="page-link">&laquo;
+                    Prev</a>
                 </li>
-                <li *ngFor="let pageNumber of [].constructor(state?.appData?.data?.page.totalPages); let i = index;" class="page-item pointer">
-                  <a (click)="goToPage(i, searchForm.value.name)" [ngClass]="i == (currentPage$ | async) ? ' active' : ''" class="page-link">
+                <li *ngFor="let pageNumber of [].constructor(state?.appData?.data?.page.totalPages); let i = index;"
+                    class="page-item pointer">
+                  <a (click)="goToPage(i, searchForm.value.name)"
+                     [ngClass]="i == (currentPage$ | async) ? ' active' : ''" class="page-link">
                     {{ i + 1 }}
                   </a>
                 </li>
-                <li [ngClass]="(state?.appData?.data?.page.totalPages - 1) == (currentPage$ | async) ? ' disabled' : ''" class="page-item pointer">
-                  <a (click)="goToNextOrPreviousPage('forward', searchForm.value.name)" class="page-link">Next &raquo;</a>
+                <li [ngClass]="(state?.appData?.data?.page.totalPages - 1) == (currentPage$ | async) ? ' disabled' : ''"
+                    class="page-item pointer">
+                  <a (click)="goToNextOrPreviousPage('forward', searchForm.value.name)" class="page-link">Next
+                    &raquo;</a>
                 </li>
               </ul>
             </nav>

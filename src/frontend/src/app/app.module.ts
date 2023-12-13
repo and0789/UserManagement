@@ -16,10 +16,10 @@ import {CustomersComponent} from './component/customers/customers.component';
 import {NavbarComponent} from './component/navbar/navbar.component';
 import {StatsComponent} from './component/stats/stats.component';
 import {TokenInterceptor} from "./interceptor/token.interceptor";
-import { NewcustomerComponent } from './component/newcustomer/newcustomer.component';
-import { InvoicesComponent } from './component/invoices/invoices.component';
-import { NewinvoiceComponent } from './component/newinvoice/newinvoice.component';
-import { InvoiceComponent } from './component/invoice/invoice.component';
+import {NewcustomerComponent} from './component/newcustomer/newcustomer.component';
+import {InvoicesComponent} from './component/invoices/invoices.component';
+import {NewinvoiceComponent} from './component/newinvoice/newinvoice.component';
+import {InvoiceComponent} from './component/invoice/invoice.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,8 @@ import { InvoiceComponent } from './component/invoice/invoice.component';
     HttpClientModule,
     FormsModule
   ],
-  providers: [ { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }],
+  providers: [{provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

@@ -1,7 +1,7 @@
-import { DataState } from "../enum/datastate.enum";
-import { Events } from "./event";
-import { Role } from "./role";
-import { User } from "./user";
+import {DataState} from "../enum/datastate.enum";
+import {Events} from "./event";
+import {Role} from "./role";
+import {User} from "./user";
 import {Customer} from "./customer";
 
 export interface LoginState {
@@ -39,3 +39,10 @@ export interface Page {
   size: number;
   number: number;
 }
+
+export interface CustomerState {
+  user: User;
+  customer: Customer;
+}
+
+

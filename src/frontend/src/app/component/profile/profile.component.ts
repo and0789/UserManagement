@@ -15,14 +15,13 @@ import {NgForm} from "@angular/forms";
 })
 export class ProfileComponent implements OnInit {
   profileState$: Observable<State<CustomHttpResponse<Profile>>>;
+  readonly DataState = DataState;
+  readonly EventType = EventType;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Profile>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingSubject.asObservable();
   private showLogsSubject = new BehaviorSubject<boolean>(false);
   showLogs$ = this.showLogsSubject.asObservable();
-  readonly DataState = DataState;
-  readonly EventType = EventType;
-
 
   constructor(private userService: UserService) {
   }
@@ -67,16 +66,16 @@ export class ProfileComponent implements OnInit {
         .pipe(
           map(response => {
             console.log(response);
-            this.dataSubject.next({ ...response, data: response.data });
+            this.dataSubject.next({...response, data: response.data});
             passwordForm.reset();
             this.isLoadingSubject.next(false);
-            return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+            return {dataState: DataState.LOADED, appData: this.dataSubject.value};
           }),
-          startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+          startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
           catchError((error: string) => {
             passwordForm.reset();
             this.isLoadingSubject.next(false);
-            return of({ dataState: DataState.LOADED, appData: this.dataSubject.value, error })
+            return of({dataState: DataState.LOADED, appData: this.dataSubject.value, error})
           })
         )
     } else {
