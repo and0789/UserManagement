@@ -29,6 +29,16 @@ export class CustomerService {
         catchError(this.handleError)
       );
 
+  searchCustomers$ = (name: string = '', page: number = 0) => <Observable<CustomHttpResponse<Page & User>>>
+    this.http.get<CustomHttpResponse<Page & User>>
+    (`${this.server}/customer/search?name=${name}&page=${page}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.log(error);
     let errorMessage: string;
