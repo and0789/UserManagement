@@ -81,4 +81,9 @@ public class UserQuery {
                     "SET image_url = :imageUrl " +
                     "WHERE id = :id";
 
+    public static final String UPDATE_USER_PASSWORD_BY_USER_ID_QUERY =
+            "UPDATE Users " +
+                    "SET password = :password " +
+                    "WHERE id = :id";
+
 }

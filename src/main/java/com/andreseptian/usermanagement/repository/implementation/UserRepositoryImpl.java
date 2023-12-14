@@ -10,6 +10,7 @@ import com.andreseptian.usermanagement.form.UpdateForm;
 import com.andreseptian.usermanagement.repository.RoleRepository;
 import com.andreseptian.usermanagement.repository.UserRepository;
 import com.andreseptian.usermanagement.rowmapper.UserRowMapper;
+import com.andreseptian.usermanagement.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -34,6 +35,7 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import static com.andreseptian.usermanagement.enumeration.RoleType.ROLE_USER;
 import static com.andreseptian.usermanagement.enumeration.VerificationType.ACCOUNT;
@@ -56,6 +58,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     private final NamedParameterJdbcTemplate jdbc;
     private final RoleRepository<Role> roleRepository;
     private final BCryptPasswordEncoder encoder;
+    private final EmailService emailService;
 
     @Override
     public User create(User user) {
@@ -69,7 +72,8 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             roleRepository.addRoleToUser(user.getId(), ROLE_USER.name());
             String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), ACCOUNT.getType());
             jdbc.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("userId", user.getId(), "url", verificationUrl));
-            //emailService.sendVerificationUrl(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
+            sendEmail(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
+            // emailService.sendVerificationEmail(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
             user.setEnabled(false);
             user.setNotLocked(true);
             return user;
@@ -78,6 +82,8 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             throw new ApiException("An error occurred. Please try again.");
         }
     }
+
+
 
     @Override
     public Collection<User> list(int page, int pageSize) {
@@ -179,7 +185,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
             String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), PASSWORD.getType());
             jdbc.update(DELETE_PASSWORD_VERIFICATION_BY_USER_ID_QUERY, of("userId", user.getId()));
             jdbc.update(INSERT_PASSWORD_VERIFICATION_QUERY, of("userId", user.getId(), "url", verificationUrl, "expirationDate", expirationDate));
-            // TODO send email with url to user
+            sendEmail(user.getFirstName(), email, verificationUrl, PASSWORD);
             log.info("Verification URL: {}", verificationUrl);
         } catch (Exception exception) {
             throw new ApiException("An error occurred. Please try again.");
@@ -209,6 +215,18 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
         try {
             jdbc.update(UPDATE_USER_PASSWORD_BY_URL_QUERY, of("password", encoder.encode(password), "url", getVerificationUrl(key, PASSWORD.getType())));
             jdbc.update(DELETE_VERIFICATION_BY_URL_QUERY, of("url", getVerificationUrl(key, PASSWORD.getType())));
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void renewPassword(Long userId, String password, String confirmPassword) {
+        if(!password.equals(confirmPassword)) throw new ApiException("Passwords don't match. Please try again.");
+        try {
+            jdbc.update(UPDATE_USER_PASSWORD_BY_USER_ID_QUERY, of("id", userId, "password", encoder.encode(password)));
+            // jdbc.update(DELETE_PASSWORD_VERIFICATION_BY_USER_ID_QUERY, of("userId", userId));
         } catch (Exception exception) {
             log.error(exception.getMessage());
             throw new ApiException("An error occurred. Please try again.");
@@ -293,6 +311,37 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
         saveImage(user.getEmail(), image);
         jdbc.update(UPDATE_USER_IMAGE_QUERY, of("imageUrl", userImageUrl, "id", user.getId()));
 
+    }
+
+    private void sendEmail(String firstName, String email, String verificationUrl, VerificationType verificationType) {
+        CompletableFuture.runAsync(() -> emailService.sendVerificationEmail(firstName, email, verificationUrl, verificationType));
+
+        /*CompletableFuture.runAsync(() -> {
+            try {
+                emailService.sendVerificationEmail(firstName, email, verificationUrl, verificationType);
+            } catch (Exception exception) {
+                throw new ApiException("Unable to send email");
+            }
+        });*/
+
+//        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+//            try {
+//                emailService.sendVerificationEmail(firstName, email, verificationUrl, verificationType);
+//            } catch (Exception exception) {
+//                throw new ApiException("Unable to send email");
+//            }
+//        });
+
+        /*CompletableFuture<Void> future = CompletableFuture.runAsync(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    emailService.sendVerificationEmail(firstName, email, verificationUrl, verificationType);
+                } catch (Exception exception) {
+                    throw new ApiException("Unable to send email");
+                }
+            }
+        });*/
     }
 
     private String setUserImageUrl(String email) {

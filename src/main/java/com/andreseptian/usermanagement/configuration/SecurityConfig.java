@@ -32,11 +32,12 @@ public class SecurityConfig {
             "/user/login/**",
             "/user/verify/code/**",
             "/user/register/**",
-            "/user/resetPassword/**",
+            "/user/resetpassword/**",
             "/user/verify/password/**",
             "/user/verify/account/**",
             "/user/refresh/token/**",
-            "/user/image/**"
+            "/user/image/**",
+            "/user/new/password/**"
     };
     private final BCryptPasswordEncoder encoder;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
