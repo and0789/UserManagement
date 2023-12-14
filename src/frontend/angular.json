@@ -13,7 +13,15 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": [ "jspdf" ],
+            "allowedCommonJsDependencies": [
+              "jspdf-autotable",
+              "raf",
+              "core-js",
+              "rgbcolor",
+              "dompurify",
+              "html2canvas",
+              "file-saver"
+            ],
             "outputPath": "dist/frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
