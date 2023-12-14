@@ -10,7 +10,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static com.andreseptian.usermanagement.constant.Constants.*;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.stream;
@@ -31,18 +31,13 @@ import static java.util.stream.Collectors.toList;
 @Component
 @RequiredArgsConstructor
 public class TokenProvider {
-    public static final String AUTHORITIES = "authorities";
-    public static final String TOKEN_CANNOT_BE_VERIFIED = "Token cannot be verified";
-    private static final String GET_ARRAYS_LLC = "ANDRE_SEPTIAN_APPLICATION";
-    private static final String CUSTOMER_MANAGEMENT_SERVICE = "CUSTOMER_MANAGEMENT_SERVICE";
-    private static final long ACCESS_TOKEN_EXPIRATION_TIME = 86_400_000; // 30_000; //
-    private static final long REFRESH_TOKEN_EXPIRATION_TIME = 432_000_000;
+
     private final UserService userService;
     @Value("${jwt.secret}")
     private String secret;
 
     public String createAccessToken(UserPrincipal userPrincipal) {
-        return JWT.create().withIssuer(GET_ARRAYS_LLC)
+        return JWT.create().withIssuer(ANDRE_SEPTIAN_APPLICATION)
                 .withAudience(CUSTOMER_MANAGEMENT_SERVICE)
                 .withIssuedAt(new Date())
                 .withSubject(String.valueOf(userPrincipal.getUser().getId()))
@@ -52,7 +47,7 @@ public class TokenProvider {
     }
 
     public String createRefreshToken(UserPrincipal userPrincipal) {
-        return JWT.create().withIssuer(GET_ARRAYS_LLC)
+        return JWT.create().withIssuer(ANDRE_SEPTIAN_APPLICATION)
                 .withAudience(CUSTOMER_MANAGEMENT_SERVICE)
                 .withIssuedAt(new Date())
                 .withSubject(String.valueOf(userPrincipal.getUser().getId()))
@@ -108,7 +103,7 @@ public class TokenProvider {
         JWTVerifier verifier;
         try {
             Algorithm algorithm = HMAC512(secret);
-            verifier = JWT.require(algorithm).withIssuer(GET_ARRAYS_LLC).build();
+            verifier = JWT.require(algorithm).withIssuer(ANDRE_SEPTIAN_APPLICATION).build();
         } catch (JWTVerificationException exception) {
             throw new JWTVerificationException(TOKEN_CANNOT_BE_VERIFIED);
         }

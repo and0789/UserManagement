@@ -16,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+import static com.andreseptian.usermanagement.constant.Constants.*;
 import static com.andreseptian.usermanagement.utils.ExceptionUtils.processError;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
@@ -26,16 +27,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
-    private static final String TOKEN_PREFIX = "Bearer ";
-    private static final String[] PUBLIC_ROUTES = {
-            "/user/login",
-            "/user/verify/code",
-            "/user/register",
-            "/user/refresh/token",
-            "/user/image",
-            "/user/new/password"
-    };
-    private static final String HTTP_OPTIONS_METHOD = "OPTIONS";
+
     private final TokenProvider tokenProvider;
 
     @Override

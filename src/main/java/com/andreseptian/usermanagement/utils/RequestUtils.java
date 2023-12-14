@@ -4,13 +4,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import nl.basjes.parse.useragent.UserAgent;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 
+import static com.andreseptian.usermanagement.constant.Constants.USER_AGENT_HEADER;
+import static com.andreseptian.usermanagement.constant.Constants.X_FORWARDED_FOR_HEADER;
 import static nl.basjes.parse.useragent.UserAgent.AGENT_NAME;
 import static nl.basjes.parse.useragent.UserAgent.DEVICE_NAME;
 
 public class RequestUtils {
-
-    public static final String USER_AGENT_HEADER = "user-agent";
-    public static final String X_FORWARDED_FOR_HEADER = "X-FORWARDED-FOR";
 
     public static String getIpAddress(HttpServletRequest request) {
         String ipAddress = "Unknown IP";

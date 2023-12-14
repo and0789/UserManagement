@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.andreseptian.usermanagement.constant.Constants.PUBLIC_URLS;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -28,17 +29,6 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private static final String[] PUBLIC_URLS = {
-            "/user/login/**",
-            "/user/verify/code/**",
-            "/user/register/**",
-            "/user/resetpassword/**",
-            "/user/verify/password/**",
-            "/user/verify/account/**",
-            "/user/refresh/token/**",
-            "/user/image/**",
-            "/user/new/password/**"
-    };
     private final BCryptPasswordEncoder encoder;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;

@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import static com.andreseptian.usermanagement.constant.Constants.DATE_FORMAT;
 import static com.andreseptian.usermanagement.enumeration.RoleType.ROLE_USER;
 import static com.andreseptian.usermanagement.enumeration.VerificationType.ACCOUNT;
 import static com.andreseptian.usermanagement.enumeration.VerificationType.PASSWORD;
@@ -54,7 +55,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 @RequiredArgsConstructor
 @Slf4j
 public class UserRepositoryImpl implements UserRepository<User>, UserDetailsService {
-    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSSSSS";
+
     private final NamedParameterJdbcTemplate jdbc;
     private final RoleRepository<Role> roleRepository;
     private final BCryptPasswordEncoder encoder;

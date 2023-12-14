@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
+import static com.andreseptian.usermanagement.constant.Constants.TOKEN_PREFIX;
 import static com.andreseptian.usermanagement.dtomapper.UserDTOMapper.toUser;
 import static com.andreseptian.usermanagement.enumeration.EventType.*;
 import static com.andreseptian.usermanagement.utils.ExceptionUtils.processError;
@@ -44,7 +45,6 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 @RequestMapping(path = "/user")
 @RequiredArgsConstructor
 public class UserResource {
-    private static final String TOKEN_PREFIX = "Bearer ";
     private final UserService userService;
     private final RoleService roleService;
     private final EventService eventService;
@@ -62,7 +62,6 @@ public class UserResource {
 
     @PostMapping("/register")
     public ResponseEntity<HttpResponse> saveUser(@RequestBody @Valid User user) throws InterruptedException {
-        TimeUnit.SECONDS.sleep(4);
         UserDTO userDto = userService.createUser(user);
         return ResponseEntity.created(getUri()).body(
                 HttpResponse.builder()
@@ -215,7 +214,6 @@ public class UserResource {
 
     @PatchMapping("/togglemfa")
     public ResponseEntity<HttpResponse> toggleMfa(Authentication authentication) throws InterruptedException {
-        TimeUnit.SECONDS.sleep(3);
         UserDTO user = userService.toggleMfa(getAuthenticatedUser(authentication).getEmail());
         publisher.publishEvent(new NewUserEvent(user.getEmail(), MFA_UPDATE));
         return ResponseEntity.ok().body(
@@ -250,7 +248,7 @@ public class UserResource {
 
     @GetMapping("/refresh/token")
     public ResponseEntity<HttpResponse> refreshToken(HttpServletRequest request) {
-        if(isHeaderAndTokenValid(request)) {
+        if (isHeaderAndTokenValid(request)) {
             String token = request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length());
             UserDTO user = userService.getUserById(tokenProvider.getSubject(token, request));
             return ResponseEntity.ok().body(
@@ -275,8 +273,8 @@ public class UserResource {
     }
 
     private boolean isHeaderAndTokenValid(HttpServletRequest request) {
-        return  request.getHeader(AUTHORIZATION) != null
-                &&  request.getHeader(AUTHORIZATION).startsWith(TOKEN_PREFIX)
+        return request.getHeader(AUTHORIZATION) != null
+                && request.getHeader(AUTHORIZATION).startsWith(TOKEN_PREFIX)
                 && tokenProvider.isTokenValid(
                 tokenProvider.getSubject(request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length()), request),
                 request.getHeader(AUTHORIZATION).substring(TOKEN_PREFIX.length())
@@ -305,18 +303,21 @@ public class UserResource {
     }*/
 
     private UserDTO authenticate(String email, String password) {
+        UserDTO userByEmail = userService.getUserByEmail(email);
         try {
-            if(null != userService.getUserByEmail(email)) {
+            if (null != userByEmail) {
                 publisher.publishEvent(new NewUserEvent(email, LOGIN_ATTEMPT));
             }
             Authentication authentication = authenticationManager.authenticate(unauthenticated(email, password));
             UserDTO loggedInUser = getLoggedInUser(authentication);
-            if(!loggedInUser.isUsingMfa()) {
+            if (!loggedInUser.isUsingMfa()) {
                 publisher.publishEvent(new NewUserEvent(email, LOGIN_ATTEMPT_SUCCESS));
             }
             return loggedInUser;
         } catch (Exception exception) {
-            publisher.publishEvent(new NewUserEvent(email, LOGIN_ATTEMPT_FAILURE));
+            if (null != userByEmail) {
+                publisher.publishEvent(new NewUserEvent(email, LOGIN_ATTEMPT_FAILURE));
+            }
             processError(request, response, exception);
             throw new ApiException(exception.getMessage());
         }
