@@ -55,6 +55,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Iterable<Invoice> getInvoices() {
+        return invoiceRepository.findAll();
+    }
+
+    @Override
     public Customer getCustomer(Long id) {
         return customerRepository.findById(id).get();
     }

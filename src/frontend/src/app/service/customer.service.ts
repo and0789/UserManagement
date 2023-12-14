@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders} from '@angular/common/http';
 import {catchError, Observable, tap, throwError} from 'rxjs';
 import {CustomerState, CustomHttpResponse, Page, Profile} from '../interface/appstates';
 import {User} from '../interface/user';
@@ -82,6 +82,22 @@ export class CustomerService {
   invoice$ = (invoiceId: number) => <Observable<CustomHttpResponse<Customer & Invoice & User>>>
     this.http.get<CustomHttpResponse<Customer & Invoice & User>>
     (`${this.server}/customer/invoice/get/${invoiceId}`)
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  downloadCustomers$ = () => <Observable<HttpEvent<Blob>>>
+    this.http.get(`${this.server}/customer/download/customers`,
+      { reportProgress: true, observe: 'events', responseType: 'blob' })
+      .pipe(
+        tap(console.log),
+        catchError(this.handleError)
+      );
+
+  downloadInvoices$ = () => <Observable<HttpEvent<Blob>>>
+    this.http.get(`${this.server}/customer/download/invoices`,
+      { reportProgress: true, observe: 'events', responseType: 'blob' })
       .pipe(
         tap(console.log),
         catchError(this.handleError)

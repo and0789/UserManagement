@@ -15,6 +15,7 @@ public interface CustomerService {
     Page<Customer> getCustomers(int page, int size);
 
     Iterable<Customer> getCustomers();
+    Iterable<Invoice> getInvoices();
 
     Customer getCustomer(Long id);
 
