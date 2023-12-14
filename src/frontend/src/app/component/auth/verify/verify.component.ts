@@ -5,6 +5,7 @@ import {Observable, BehaviorSubject, map, startWith, catchError, of, switchMap} 
 import {DataState} from 'src/app/enum/datastate.enum';
 import {AccountType, VerifySate} from 'src/app/interface/appstates';
 import {User} from 'src/app/interface/user';
+import {NotificationService} from 'src/app/service/notification.service';
 import {UserService} from 'src/app/service/user.service';
 
 @Component({
@@ -22,7 +23,7 @@ export class VerifyComponent implements OnInit {
   readonly DataState = DataState;
   private readonly ACCOUNT_KEY: string = 'key';
 
-  constructor(private activatedRoute: ActivatedRoute, private userService: UserService) {
+  constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private notification: NotificationService) {
   }
 
   ngOnInit(): void {
@@ -33,6 +34,7 @@ export class VerifyComponent implements OnInit {
         return this.userService.verify$(params.get(this.ACCOUNT_KEY), type)
           .pipe(
             map(response => {
+              this.notification.onDefault(response.message);
               console.log(response);
               type === 'password' ? this.userSubject.next(response.data.user) : null;
               return {
@@ -50,6 +52,7 @@ export class VerifyComponent implements OnInit {
               verifySuccess: false
             }),
             catchError((error: string) => {
+              this.notification.onError(error);
               return of({title: error, dataState: DataState.ERROR, error, message: error, verifySuccess: false})
             })
           )
@@ -66,6 +69,7 @@ export class VerifyComponent implements OnInit {
     })
       .pipe(
         map(response => {
+          this.notification.onDefault(response.message);
           console.log(response);
           this.isLoadingSubject.next(false);
           return {
@@ -83,6 +87,7 @@ export class VerifyComponent implements OnInit {
           verifySuccess: false
         }),
         catchError((error: string) => {
+          this.notification.onError(error);
           this.isLoadingSubject.next(false);
           return of({
             type: 'password' as AccountType,

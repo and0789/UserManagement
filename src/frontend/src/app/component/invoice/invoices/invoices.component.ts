@@ -9,6 +9,7 @@ import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
 import {HttpEvent, HttpEventType} from "@angular/common/http";
 import { saveAs } from 'file-saver';
+import {NotificationService} from "../../../service/notification.service";
 
 @Component({
   selector: 'app-invoices',
@@ -29,18 +30,20 @@ export class InvoicesComponent  implements OnInit {
   fileStatus$ = this.fileStatusSubject.asObservable();
   readonly DataState = DataState;
 
-  constructor(private router: Router, private customerService: CustomerService) { }
+  constructor(private router: Router, private customerService: CustomerService, private notification: NotificationService) { }
 
   ngOnInit(): void {
     this.invoicesState$ = this.customerService.invoices$()
       .pipe(
         map(response => {
+          this.notification.onDefault(response.message);
           console.log(response);
           this.dataSubject.next(response);
           return { dataState: DataState.LOADED, appData: response };
         }),
         startWith({ dataState: DataState.LOADING }),
         catchError((error: string) => {
+          this.notification.onError(error);
           return of({ dataState: DataState.ERROR, error })
         })
       )
@@ -50,6 +53,7 @@ export class InvoicesComponent  implements OnInit {
     this.invoicesState$ = this.customerService.invoices$(pageNumber)
       .pipe(
         map(response => {
+          this.notification.onDefault(response.message);
           console.log(response);
           this.dataSubject.next(response);
           this.currentPageSubject.next(pageNumber);
@@ -57,6 +61,7 @@ export class InvoicesComponent  implements OnInit {
         }),
         startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
+          this.notification.onError(error);
           return of({ dataState: DataState.LOADED, error, appData: this.dataSubject.value })
         })
       )
@@ -76,6 +81,7 @@ export class InvoicesComponent  implements OnInit {
         }),
         startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
         catchError((error: string) => {
+          this.notification.onError(error);
           return of({ dataState: DataState.LOADED, error, appData: this.dataSubject.value })
         })
       )

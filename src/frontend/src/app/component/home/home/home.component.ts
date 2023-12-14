@@ -1,16 +1,16 @@
+import {HttpEvent, HttpEventType} from '@angular/common/http';
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import { EventType, Router } from '@angular/router';
-import { Observable, BehaviorSubject, map, startWith, catchError, of } from 'rxjs';
-import { DataState } from 'src/app/enum/datastate.enum';
-import { CustomHttpResponse, Page, Profile } from 'src/app/interface/appstates';
-import { Customer } from 'src/app/interface/customer';
-import { State } from 'src/app/interface/state';
-import { Stats } from 'src/app/interface/stats';
-import { User } from 'src/app/interface/user';
-import { CustomerService } from 'src/app/service/customer.service';
-import { UserService } from 'src/app/service/user.service';
-import {HttpEvent, HttpEventType} from "@angular/common/http";
-import { saveAs } from 'file-saver';
+import {Router} from '@angular/router';
+import {Observable, BehaviorSubject, map, startWith, catchError, of} from 'rxjs';
+import {DataState} from 'src/app/enum/datastate.enum';
+import {CustomHttpResponse, Page} from 'src/app/interface/appstates';
+import {Customer} from 'src/app/interface/customer';
+import {State} from 'src/app/interface/state';
+import {Stats} from 'src/app/interface/stats';
+import {User} from 'src/app/interface/user';
+import {CustomerService} from 'src/app/service/customer.service';
+import {saveAs} from 'file-saver';
+import {NotificationService} from 'src/app/service/notification.service';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +18,7 @@ import { saveAs } from 'file-saver';
   styleUrls: ['./home.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HomeComponent  implements OnInit {
+export class HomeComponent implements OnInit {
   homeState$: Observable<State<CustomHttpResponse<Page<Customer> & User & Stats>>>;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Page<Customer> & User & Stats>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
@@ -31,19 +31,21 @@ export class HomeComponent  implements OnInit {
   fileStatus$ = this.fileStatusSubject.asObservable();
   readonly DataState = DataState;
 
-  constructor(private router: Router, private customerService: CustomerService) { }
+  constructor(private router: Router, private customerService: CustomerService, private notification: NotificationService) {
+  }
 
   ngOnInit(): void {
     this.homeState$ = this.customerService.customers$()
       .pipe(
         map(response => {
+          this.notification.onDefault(response.message);
           console.log(response);
           this.dataSubject.next(response);
-          return { dataState: DataState.LOADED, appData: response };
+          return {dataState: DataState.LOADED, appData: response};
         }),
-        startWith({ dataState: DataState.LOADING }),
+        startWith({dataState: DataState.LOADING}),
         catchError((error: string) => {
-          return of({ dataState: DataState.ERROR, error })
+          return of({dataState: DataState.ERROR, error})
         })
       )
   }
@@ -52,14 +54,15 @@ export class HomeComponent  implements OnInit {
     this.homeState$ = this.customerService.customers$(pageNumber)
       .pipe(
         map(response => {
+          this.notification.onDefault(response.message);
           console.log(response);
           this.dataSubject.next(response);
           this.currentPageSubject.next(pageNumber);
-          return { dataState: DataState.LOADED, appData: response };
+          return {dataState: DataState.LOADED, appData: response};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
-          return of({ dataState: DataState.LOADED, error, appData: this.dataSubject.value })
+          return of({dataState: DataState.LOADED, error, appData: this.dataSubject.value})
         })
       )
   }
@@ -78,11 +81,12 @@ export class HomeComponent  implements OnInit {
         map(response => {
           console.log(response);
           this.reportProgress(response);
-          return { dataState: DataState.LOADED, appData: this.dataSubject.value };
+          return {dataState: DataState.LOADED, appData: this.dataSubject.value};
         }),
-        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        startWith({dataState: DataState.LOADED, appData: this.dataSubject.value}),
         catchError((error: string) => {
-          return of({ dataState: DataState.LOADED, error, appData: this.dataSubject.value })
+          this.notification.onError(error);
+          return of({dataState: DataState.LOADED, error, appData: this.dataSubject.value})
         })
       )
   }
@@ -90,14 +94,19 @@ export class HomeComponent  implements OnInit {
   private reportProgress(httpEvent: HttpEvent<string[] | Blob>): void {
     switch (httpEvent.type) {
       case HttpEventType.DownloadProgress || HttpEventType.UploadProgress:
-        this.fileStatusSubject.next({ status: 'progress', type: 'Downloading...', percent: Math.round(100 * httpEvent.loaded / httpEvent.total) });
+        this.fileStatusSubject.next({
+          status: 'progress',
+          type: 'Downloading...',
+          percent: Math.round(100 * httpEvent.loaded / httpEvent.total)
+        });
         break;
       case HttpEventType.ResponseHeader:
         console.log('Got response Headers', httpEvent);
         break;
       case HttpEventType.Response:
+        this.notification.onDefault('Downloading file...');
         saveAs(new File([<Blob>httpEvent.body], httpEvent.headers.get('File-Name'),
-          { type: `${httpEvent.headers.get('Content-Type')};charset-utf-8` }));
+          {type: `${httpEvent.headers.get('Content-Type')};charset-utf-8`}));
         this.fileStatusSubject.next(undefined);
         break;
       default:
@@ -105,4 +114,5 @@ export class HomeComponent  implements OnInit {
         break;
     }
   }
+
 }
