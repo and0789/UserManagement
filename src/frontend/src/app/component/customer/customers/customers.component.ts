@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { EventType, Router } from '@angular/router';
 import { Observable, BehaviorSubject, map, startWith, catchError, of } from 'rxjs';
 import { DataState } from 'src/app/enum/datastate.enum';
 import { CustomHttpResponse, Page, Profile } from 'src/app/interface/appstates';
 import { Customer } from 'src/app/interface/customer';
 import { State } from 'src/app/interface/state';
-import { Stats } from 'src/app/interface/stats';
 import { User } from 'src/app/interface/user';
 import { CustomerService } from 'src/app/service/customer.service';
 import { UserService } from 'src/app/service/user.service';
@@ -13,13 +13,14 @@ import {HttpEvent, HttpEventType} from "@angular/common/http";
 import { saveAs } from 'file-saver';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  selector: 'app-customers',
+  templateUrl: './customers.component.html',
+  styleUrls: ['./customers.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HomeComponent  implements OnInit {
-  homeState$: Observable<State<CustomHttpResponse<Page<Customer> & User & Stats>>>;
-  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page<Customer> & User & Stats>>(null);
+export class CustomersComponent implements OnInit {
+  customersState$: Observable<State<CustomHttpResponse<Page<Customer> & User>>>;
+  private dataSubject = new BehaviorSubject<CustomHttpResponse<Page<Customer> & User>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoadingSubject.asObservable();
   private currentPageSubject = new BehaviorSubject<number>(0);
@@ -33,7 +34,7 @@ export class HomeComponent  implements OnInit {
   constructor(private router: Router, private customerService: CustomerService) { }
 
   ngOnInit(): void {
-    this.homeState$ = this.customerService.customers$()
+    this.customersState$ = this.customerService.searchCustomers$()
       .pipe(
         map(response => {
           console.log(response);
@@ -47,8 +48,24 @@ export class HomeComponent  implements OnInit {
       )
   }
 
-  goToPage(pageNumber?: number): void {
-    this.homeState$ = this.customerService.customers$(pageNumber)
+  searchCustomers(searchForm: NgForm): void {
+    this.currentPageSubject.next(0);
+    this.customersState$ = this.customerService.searchCustomers$(searchForm.value.name)
+      .pipe(
+        map(response => {
+          console.log(response);
+          this.dataSubject.next(response);
+          return { dataState: DataState.LOADED, appData: response };
+        }),
+        startWith({ dataState: DataState.LOADED, appData: this.dataSubject.value }),
+        catchError((error: string) => {
+          return of({ dataState: DataState.ERROR, error })
+        })
+      )
+  }
+
+  goToPage(pageNumber?: number, name?: string): void {
+    this.customersState$ = this.customerService.searchCustomers$(name, pageNumber)
       .pipe(
         map(response => {
           console.log(response);
@@ -63,8 +80,8 @@ export class HomeComponent  implements OnInit {
       )
   }
 
-  goToNextOrPreviousPage(direction?: string): void {
-    this.goToPage(direction === 'forward' ? this.currentPageSubject.value + 1 : this.currentPageSubject.value - 1);
+  goToNextOrPreviousPage(direction?: string, name?: string): void {
+    this.goToPage(direction === 'forward' ? this.currentPageSubject.value + 1 : this.currentPageSubject.value - 1, name);
   }
 
   selectCustomer(customer: Customer): void {
@@ -72,7 +89,7 @@ export class HomeComponent  implements OnInit {
   }
 
   report(): void {
-    this.homeState$ = this.customerService.downloadCustomers$()
+    this.customersState$ = this.customerService.downloadCustomers$()
       .pipe(
         map(response => {
           console.log(response);
@@ -104,4 +121,5 @@ export class HomeComponent  implements OnInit {
         break;
     }
   }
+
 }

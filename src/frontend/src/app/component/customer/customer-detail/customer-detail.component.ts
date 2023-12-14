@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ParamMap } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,10 +11,11 @@ import { CustomerService } from 'src/app/service/customer.service';
 
 @Component({
   selector: 'app-customer',
-  templateUrl: './customer.component.html',
-  styleUrls: ['./customer.component.css']
+  templateUrl: './customer-detail.component.html',
+  styleUrls: ['./customer-detail.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CustomerComponent implements OnInit {
+export class CustomerDetailComponent implements OnInit {
   customerState$: Observable<State<CustomHttpResponse<CustomerState>>>;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<CustomerState>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);

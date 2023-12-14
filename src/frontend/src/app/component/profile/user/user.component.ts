@@ -3,17 +3,18 @@ import {State} from 'src/app/interface/state';
 import {UserService} from 'src/app/service/user.service';
 import {Observable, of, BehaviorSubject, map, startWith, catchError} from 'rxjs';
 import {DataState} from 'src/app/enum/datastate.enum';
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {EventType} from 'src/app/enum/event-type.enum';
 import {NgForm} from "@angular/forms";
 
 
 @Component({
   selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProfileComponent implements OnInit {
+export class UserComponent implements OnInit {
   profileState$: Observable<State<CustomHttpResponse<Profile>>>;
   readonly DataState = DataState;
   readonly EventType = EventType;

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap} from '@angular/router';
 import {Observable, BehaviorSubject, switchMap, map, startWith, catchError, of} from 'rxjs';
 import {DataState} from 'src/app/enum/datastate.enum';
@@ -14,10 +14,11 @@ const INVOICE_ID = 'id';
 
 @Component({
   selector: 'app-invoice',
-  templateUrl: './invoice.component.html',
-  styleUrls: ['./invoice.component.css']
+  templateUrl: './invoice-detail.component.html',
+  styleUrls: ['./invoice-detail.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InvoiceComponent implements OnInit {
+export class InvoiceDetailComponent implements OnInit {
   invoiceState$: Observable<State<CustomHttpResponse<Customer & Invoice & User>>>;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Customer & Invoice & User>>(null);
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
