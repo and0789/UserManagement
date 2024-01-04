@@ -94,8 +94,36 @@ CREATE TABLE TwoFactorVerifications
 );
 
 
--- INSERT INTO roles (name, permission)
--- VALUES ('ROLE_USER', 'READ:USER, READ:CUSTOMER'),
---        ('ROLE_MANAGER', 'READ:USER, READ:CUSTOMER, UPDATE:USER, UPDATE:CUSTOMER'),
---        ('ROLE_ADMIN', 'CREATE:USER, CREATE:CUSTOMER, READ:USER, READ:CUSTOMER, UPDATE:USER, UPDATE:CUSTOMER'),
---        ('ROLE_SYSADMIN', 'CREATE:USER, CREATE:CUSTOMER, READ:USER, READ:CUSTOMER, UPDATE:USER, UPDATE:CUSTOMER, DELETE:USER, DELETE:CUSTOMER');
+INSERT INTO roles (name, permission)
+VALUES ('ROLE_USER', 'READ:USER, READ:CUSTOMER'),
+       ('ROLE_MANAGER', 'READ:USER, READ:CUSTOMER, UPDATE:USER, UPDATE:CUSTOMER'),
+       ('ROLE_ADMIN', 'CREATE:USER, CREATE:CUSTOMER, READ:USER, READ:CUSTOMER, UPDATE:USER, UPDATE:CUSTOMER'),
+       ('ROLE_SYSADMIN', 'CREATE:USER, CREATE:CUSTOMER, READ:USER, READ:CUSTOMER, UPDATE:USER, UPDATE:CUSTOMER, DELETE:USER, DELETE:CUSTOMER');
+
+
+INSERT INTO public.events (id, type, description)
+VALUES (1, 'LOGIN_ATTEMPT', 'You tried to login');
+
+INSERT INTO public.events (id, type, description)
+VALUES (2, 'LOGIN_ATTEMPT_FAILURE', 'You Tried to login and you failed');
+
+INSERT INTO public.events (id, type, description)
+VALUES (3, 'LOGIN_ATTEMPT_SUCCESS', 'You Tried to login and you success');
+
+INSERT INTO public.events (id, type, description)
+VALUES (4, 'PROFILE_UPDATE', 'You update your profile information');
+
+INSERT INTO public.events (id, type, description)
+VALUES (5, 'PROFILE_PICTURE_UPDATE', 'You update your profile pictures');
+
+INSERT INTO public.events (id, type, description)
+VALUES (6, 'ROLE_UPDATE', 'You update your role and permission');
+
+INSERT INTO public.events (id, type, description)
+VALUES (7, 'ACCOUNT_SETTINGS_UPDATE', 'Your updated account settings');
+
+INSERT INTO public.events (id, type, description)
+VALUES (8, 'MFA_UPDATE', 'You update your MFA setting');
+
+INSERT INTO public.events (id, type, description)
+VALUES (9, 'PASSWORD_UPDATE', 'You update your password');
